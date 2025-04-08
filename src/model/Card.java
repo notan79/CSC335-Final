@@ -26,7 +26,7 @@ public class Card{
         this.suit = s;
     }
 
-    public ArrayList<Card> getShuffledCards(){
+    public static ArrayList<Card> getShuffledCards(){
         Collections.shuffle(CARDS);
         return CARDS;
     }
