@@ -1,15 +1,16 @@
-
+package model;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import model.Rank;
-import model.Suit;
-
 public class Card{
 
-    private static final ArrayList<Card> CARDS = new ArrayList<Card>(52);
-    public static Rank rank;
-    public static Suit suit;
+    public static void main(String[] args){
+        System.out.println("Hello World");
+    }
+
+    private static final ArrayList<Card> CARDS = new ArrayList<>(52);
+    public Rank rank;
+    public Suit suit;
 
     static{
         for (Rank r: Rank.values()){
@@ -25,7 +26,7 @@ public class Card{
         this.suit = s;
     }
 
-    public ArrayList<Card> getShuffledCards(){
+    public static ArrayList<Card> getShuffledCards(){
         Collections.shuffle(CARDS);
         return CARDS;
     }
