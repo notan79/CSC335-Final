@@ -86,6 +86,20 @@ public class Hand implements Iterable<Card>{
     }
 
 
+    public HashSet<Card> getFaceUpHand() {
+        return new HashSet<>(faceUpHand);
+    }
+
+    public HashSet<Card> getMainHand() {
+        return new HashSet<>(mainHand);
+    }
+
+    // added a getter for the face down hand
+    public ArrayList<Card> getFaceDownHand() {
+        return new ArrayList<>(faceDownHand);
+}
+
+
     public String toString(){
         StringBuilder s = new StringBuilder();
         s.append("Main Hand: ");
