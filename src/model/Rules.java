@@ -14,23 +14,23 @@ public class Rules {
    
 
     public Rules() { 
-        deck = new Deck();
-        players = new ArrayList<Hand>();
+        this.deck = new Deck();
+        this.players = new ArrayList<Hand>();
 
         for (int i = 0; i < 4; i++) { 
             // creates 4 players with full hands
             Hand player = new Hand(); 
             for (int j = 0; j < 11; j++) { // this gives the person their 11 cards 
-                player.addCard(deck.takeCard());
+                player.addCard(this.deck.takeCard());
             }
-            players.add(player);
+            this.players.add(player);
         }
     }
 
     
     public void swapHand(Card c1, Card c2) { 
         // swaps the card from the current hand (5) to the under hand (3)
-        Hand player = players.get(this.turn.ordinal()); // this gets the current player
+        Hand player = this.players.get(this.turn.ordinal()); // this gets the current player
 
         if (player.getFaceUpHand().contains(c1) && player.getMainHand().contains(c2)) {
             
@@ -40,25 +40,20 @@ public class Rules {
         }
 
         //player.faceUpHand;
-
+    }
 
 
 
 
 
     public void playCard(int num){
-       Hand curPlayer = players.get(this.turn.ordinal());
+       Hand curPlayer = this.players.get(this.turn.ordinal());
     //    curPlayer.playCard(c);
     }
 
 
         // Turn.values()[(this.turn.ordinal() + 1 ) % 4]; // this gets the next turn
 
-
-        
-        
-
-    }
 
     // need to make a take hand function (implement takeall, and take one)
 
@@ -68,7 +63,7 @@ public class Rules {
 
 
     public String toString() {
-        String s = "PLAYER1 = " + players.get(0) + "\nPLAYER2 = " + players.get(1) + "\nPLAYER3 = " + players.get(2) + "\nPLAYER4 = " + players.get(3);
+        String s = "PLAYER1 = " + this.players.get(0) + "\nPLAYER2 = " + this.players.get(1) + "\nPLAYER3 = " + this.players.get(2) + "\nPLAYER4 = " + this.players.get(3);
         return s; 
     }
 
