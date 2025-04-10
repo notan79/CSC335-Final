@@ -30,6 +30,11 @@ public class Rules {
     // need to make a swap function 
     // need to make an add to hand function
 
+    public void playCard(int num){
+       Hand curPlayer = players.get(this.turn.ordinal());
+    //    curPlayer.playCard(c);
+    }
+
 
     public String toString() {
         String s = "PLAYER1 = " + players.get(0) + "\nPLAYER2 = " + players.get(1) + "\nPLAYER3 = " + players.get(2) + "\nPLAYER4 = " + players.get(3);
@@ -43,6 +48,7 @@ public class Rules {
         System.out.println("DECK: " + game.deck);
 
 
+        System.out.println(Turn.values()[(game.turn.ordinal()+1) % 4]);
 
     }
     
