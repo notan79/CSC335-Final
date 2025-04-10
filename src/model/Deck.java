@@ -23,5 +23,9 @@ public class Deck {
         return deck.isEmpty();
     }
 
+    public String toString() { 
+        return deck.toString(); 
+    }
+
 
 }

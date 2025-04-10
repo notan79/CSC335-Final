@@ -7,6 +7,11 @@ public class Rules {
 
     private Deck deck; // the deck that each player (Hand.java) takes from in order to recieve a Card
     private ArrayList<Hand> players; // stores all the players 
+    private enum Turn {
+        PLAYER1, PLAYER2, PLAYER3, PLAYER4;
+    }
+    private Turn turn = Turn.PLAYER1;
+   
 
     public Rules() { 
         deck = new Deck();
@@ -21,9 +26,28 @@ public class Rules {
             players.add(player);
         }
     }
+
+    // need to make a swap function 
+    // need to make an add to hand function
+
+
+    public String toString() {
+        String s = "PLAYER1 = " + players.get(0) + "\nPLAYER2 = " + players.get(1) + "\nPLAYER3 = " + players.get(2) + "\nPLAYER4 = " + players.get(3);
+        return s; 
+    }
+
+
+    public static void main(String args[]){
+        Rules game = new Rules();
+        System.out.println(game.toString()); 
+        System.out.println("DECK: " + game.deck);
+
+
+
+    }
     
 
-
+    
     
 
 

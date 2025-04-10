@@ -73,11 +73,11 @@ public class Hand implements Iterable<Card>{
             s.append(c);
         }
 
-        s.append("Face down Hand: ");
+        s.append("\nFace down Hand: ");
         for(Card c : this.faceDownHand){
             s.append(c);
         }
-
+        s.append("\n"); // delete later
         return s.toString();
     }
 }
