@@ -41,7 +41,19 @@ public class Hand implements Iterable<Card>{
         return false;
     }
 
-    public void playCard(Card c){
+    // Precondition: a valid card is picked
+    public boolean playCard(int num){
+
+        Card c = null;; 
+        int i = 0;
+        for(Card temp: this){
+            if(i == num){
+                c = temp;
+                break;
+            }
+            ++i;
+        }
+        
         // Remove from mainHand first
         if(mainHand.size() != 0){
             mainHand.remove(c);
@@ -54,6 +66,19 @@ public class Hand implements Iterable<Card>{
         else{
             faceDownHand.remove(c);
         }
+        return true;
+    }
+
+    // Precondition: 0 <= num < this.totalCards
+    public Card getCard(int num){
+        int i = 0;
+        for(Card c: this){
+            if(i == num)
+                return c;
+            ++i;
+        }
+        // Cannot happen
+        return null;
     }
 
     public int totalCards(){
