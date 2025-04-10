@@ -60,6 +60,7 @@ public class Hand implements Iterable<Card>{
         return this.mainHand.size() + this.faceUpHand.size() + this.faceDownHand.size();
     }
 
+
     public HashSet<Card> getFaceUpHand() {
         return new HashSet<>(faceUpHand);
     }
