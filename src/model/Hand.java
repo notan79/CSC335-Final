@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class Hand implements Iterable<Card>{
-    HashSet<Card> mainHand = new HashSet<>(5);
-    HashSet<Card> faceUpHand = new HashSet<>(3);
-    ArrayList<Card> faceDownHand = new ArrayList<>(3);
+    private final HashSet<Card> mainHand = new HashSet<>(5);
+    private final HashSet<Card> faceUpHand = new HashSet<>(3);
+    private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
+
 
     public Iterator<Card> iterator(){
         ArrayList<Card> temp = new ArrayList<>(mainHand);
@@ -21,7 +22,18 @@ public class Hand implements Iterable<Card>{
     }
 
     public boolean addCard(Card c){
-        if(mainHand.size() < 5){
+        // Add to face down first
+        if(faceDownHand.size() < 3){
+            faceDownHand.add(c);
+            return true;
+        }
+        // Add to faceUp hand next
+        else if (faceUpHand.size() < 3) {
+            faceUpHand.add(c);
+            return true;
+        }
+        // Add to mainHand last
+        else if(mainHand.size() < 5){
             mainHand.add(c);
             return true;
         }
@@ -29,11 +41,17 @@ public class Hand implements Iterable<Card>{
     }
 
     public void playCard(Card c){
-        if(mainHand.size() == 0){
+
+        // Remove from mainHand first
+        if(mainHand.size() != 0){
             mainHand.remove(c);
-        }else if(faceUpHand.size() != 0){
+        }
+        // Remove from faceUp next
+        else if(faceUpHand.size() != 0){
             faceUpHand.remove(c);
-        }else{
+        }
+        // Remove from faceDown last
+        else{
             faceDownHand.remove(c);
         }
     }
