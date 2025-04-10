@@ -60,6 +60,14 @@ public class Hand implements Iterable<Card>{
         return this.mainHand.size() + this.faceUpHand.size() + this.faceDownHand.size();
     }
 
+    public HashSet<Card> getFaceUpHand() { // FIX THESE, FIX ESCAPING REFERENCES
+        return faceUpHand;
+    }
+
+    public HashSet<Card> getMainHand() { // FIX THESE, FIX ESCAPING REFERENCES
+        return mainHand;
+    }
+
 
     public String toString(){
         StringBuilder s = new StringBuilder();
