@@ -59,4 +59,25 @@ public class Hand implements Iterable<Card>{
     public int totalCards(){
         return this.mainHand.size() + this.faceUpHand.size() + this.faceDownHand.size();
     }
+
+
+    public String toString(){
+        StringBuilder s = new StringBuilder();
+        s.append("Main Hand: ");
+        for(Card c : this.mainHand){
+            s.append(c);
+        }
+
+        s.append("\nFace up Hand: ");
+        for(Card c : this.faceUpHand){
+            s.append(c);
+        }
+
+        s.append("Face down Hand: ");
+        for(Card c : this.faceDownHand){
+            s.append(c);
+        }
+
+        return s.toString();
+    }
 }
