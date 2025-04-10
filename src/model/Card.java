@@ -31,5 +31,9 @@ public class Card{
         return CARDS;
     }
 
+    public String toString() { 
+        return rank + " ";
+    }
+
     
 }
