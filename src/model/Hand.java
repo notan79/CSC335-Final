@@ -10,6 +10,7 @@ public class Hand implements Iterable<Card>{
     private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
 
 
+    @Override
     public Iterator<Card> iterator(){
         ArrayList<Card> temp = new ArrayList<>(mainHand);
         for(Card c : faceUpHand){
@@ -41,7 +42,6 @@ public class Hand implements Iterable<Card>{
     }
 
     public void playCard(Card c){
-
         // Remove from mainHand first
         if(mainHand.size() != 0){
             mainHand.remove(c);
