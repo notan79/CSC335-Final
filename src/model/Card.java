@@ -28,11 +28,11 @@ public class Card{
 
     public static ArrayList<Card> getShuffledCards(){
         Collections.shuffle(CARDS);
-        return CARDS;
+        return new ArrayList<>(CARDS);
     }
 
     public String toString() { 
-        return rank + " ";
+        return this.rank + " ";
     }
 
     

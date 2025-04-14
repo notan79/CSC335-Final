@@ -9,64 +9,40 @@ public class Hand implements Iterable<Card>{
     private final HashSet<Card> faceUpHand = new HashSet<>(3);
     private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
 
-
-    @Override
-    public Iterator<Card> iterator(){
-        ArrayList<Card> temp = new ArrayList<>(mainHand);
-        for(Card c : faceUpHand){
-            temp.add(c);
-        }
-        for(Card c: faceDownHand){
-            temp.add(c);
-        }
-        return temp.iterator();
-    }
-
     public boolean addCard(Card c){
         // Add to face down first
-        if(faceDownHand.size() < 3){
-            faceDownHand.add(c);
+        if(this.faceDownHand.size() < 3){
+            this.faceDownHand.add(c);
             return true;
         }
         // Add to faceUp hand next
-        else if (faceUpHand.size() < 3) {
-            faceUpHand.add(c);
+        else if (this.faceUpHand.size() < 3) {
+            this.faceUpHand.add(c);
             return true;
         }
         // Add to mainHand last
-        else if(mainHand.size() < 5){
-            mainHand.add(c);
+        else if(this.mainHand.size() < 5){
+            this.mainHand.add(c);
             return true;
         }
         return false;
     }
 
     // Precondition: a valid card is picked
-    public boolean playCard(int num){
-
-        Card c = null;; 
-        int i = 0;
-        for(Card temp: this){
-            if(i == num){
-                c = temp;
-                break;
-            }
-            ++i;
-        }
-        
+    public Card playCard(Card c){        
         // Remove from mainHand first
-        if(mainHand.size() != 0){
-            mainHand.remove(c);
+        if(this.mainHand.size() != 0){
+            this.mainHand.remove(c);
         }
         // Remove from faceUp next
-        else if(faceUpHand.size() != 0){
-            faceUpHand.remove(c);
+        else if(this.faceUpHand.size() != 0){
+            this.faceUpHand.remove(c);
         }
         // Remove from faceDown last
         else{
-            faceDownHand.remove(c);
+            this.faceDownHand.remove(c);
         }
-        return true;
+        return c; 
     }
 
     // Precondition: 0 <= num < this.totalCards
@@ -81,22 +57,31 @@ public class Hand implements Iterable<Card>{
         return null;
     }
 
+    // C1 is from mainHand and c2 is from faceUp hand
+    public void swapCards(Card c1, Card c2){
+        this.mainHand.remove(c1);
+        this.faceUpHand.remove(c2);
+
+        this.mainHand.add(c2);
+        this.faceUpHand.add(c1);
+    }
+
     public int totalCards(){
         return this.mainHand.size() + this.faceUpHand.size() + this.faceDownHand.size();
     }
 
 
     public HashSet<Card> getFaceUpHand() {
-        return new HashSet<>(faceUpHand);
+        return new HashSet<>(this.faceUpHand);
     }
 
     public HashSet<Card> getMainHand() {
-        return new HashSet<>(mainHand);
+        return new HashSet<>(this.mainHand);
     }
 
     // added a getter for the face down hand
     public ArrayList<Card> getFaceDownHand() {
-        return new ArrayList<>(faceDownHand);
+        return new ArrayList<>(this.faceDownHand);
 }
 
 
@@ -118,5 +103,17 @@ public class Hand implements Iterable<Card>{
         }
         s.append("\n"); // delete later
         return s.toString();
+    }
+
+    @Override
+    public Iterator<Card> iterator(){
+        ArrayList<Card> temp = new ArrayList<>(this.mainHand);
+        for(Card c : this.faceUpHand){
+            temp.add(c);
+        }
+        for(Card c: this.faceDownHand){
+            temp.add(c);
+        }
+        return temp.iterator();
     }
 }
