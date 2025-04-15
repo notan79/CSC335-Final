@@ -8,23 +8,23 @@ public class Deck {
     public Deck(){
         ArrayList<Card> cards = Card.getShuffledCards();
         for(Card c: cards){
-            deck.push(c);
+            this.deck.push(c);
         }
     }
 
     public Card takeCard(){
-        if(!deck.empty()){
-            return deck.pop();
+        if(!this.deck.empty()){
+            return this.deck.pop();
         }
         return null;
     }
 
     public boolean isEmpty(){
-        return deck.isEmpty();
+        return this.deck.isEmpty();
     }
 
     public String toString() { 
-        return deck.toString(); 
+        return this.deck.toString(); 
     }
 
 
