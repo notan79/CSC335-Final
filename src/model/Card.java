@@ -4,10 +4,6 @@ import java.util.Collections;
 
 public class Card{
 
-    public static void main(String[] args){
-        System.out.println("Hello World");
-    }
-
     private static final ArrayList<Card> CARDS = new ArrayList<>(52);
     public Rank rank;
     public Suit suit;
