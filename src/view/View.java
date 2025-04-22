@@ -90,20 +90,29 @@ public class View extends JFrame {
 
 	public void refresh() {
 		// Clear old buttons
-		for (CardButton b : this.mainButtons) this.remove(b);
-		for (CardButton b : this.faceUpButtons) this.remove(b);
+		for (CardButton b : this.mainButtons){
+			this.remove(b);
+			this.mainPanel.remove(b);
+		}
+		for (CardButton b : this.faceUpButtons){
+			this.remove(b);
+			this.mainPanel.remove(b);
+		} 
 	
 		this.mainButtons.clear();
 		this.faceUpButtons.clear();
 	
 		// Update main hand buttons
 		ArrayList<Card> main = this.controller.getMainHand();
+		System.out.println("Main: " + main);
 		for (int i = 0; i < main.size(); i++) {
+			System.out.println("Creating: " + main.get(i).toString());
 			CardButton temp = new CardButton(main.get(i).toString());
 			temp.setBounds(580 + i * 80, 650, 70, 50);
 			temp.setActionCommand("C" + i);
 			temp.addActionListener(this.controller);
 			this.add(temp);
+			this.mainPanel.add(temp);
 			this.mainButtons.add(temp);
 		}
 	
@@ -115,11 +124,15 @@ public class View extends JFrame {
 			temp.setActionCommand("F" + i);
 			temp.addActionListener(this.controller);
 			this.add(temp);
+			this.mainPanel.add(temp);
 			this.faceUpButtons.add(temp);
 		}
 	
 		// Update pile button
-		this.deckButton.setText(this.controller.viewTopCard().toString());
+		if(this.controller.viewTopCard() == null){
+			this.deckButton.setText("Empty");
+		}else
+			this.deckButton.setText(this.controller.viewTopCard().toString());
 	
 		this.revalidate();
 		this.repaint();

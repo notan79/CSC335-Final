@@ -35,7 +35,7 @@ public class Controller implements ActionListener {
             boolean success = this.model.playCard(index);
 
             if (success) {
-                this.model.takeCard(); // optional: draw a new card after playing
+                this.model.takeCard();
                 this.updateView();
             } else {
                 System.out.println("Invalid move.");

@@ -28,7 +28,7 @@ public class Card{
     }
 
     public String toString() { 
-        return this.rank.toString() + " " + this.suit.toString();
+        return this.rank.toString() + this.suit.toString() + " ";
     }
 
     

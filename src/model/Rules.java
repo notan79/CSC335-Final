@@ -52,13 +52,6 @@ public class Rules {
 		this.observers.remove(observer);
 	}
 	
-	/* PRIVATE METHODS */
-	private void notifyObservers() {
-        System.out.println(this.players.get(0));
-		for(Observer o : this.observers) {
-			o.cardPlayed(this.takeCard());
-		}
-	}
 
     public Card viewTopCard() { 
         if (this.pile.isEmpty()) {
@@ -76,6 +69,7 @@ public class Rules {
     }
 
     public boolean playCard(int num){
+        System.out.println("Playing: " + num);
        Hand curPlayer = this.players.get(this.turn.ordinal());
        Card c = curPlayer.getCard(num);
        System.out.println(c);
@@ -86,7 +80,6 @@ public class Rules {
        if(this.pile.peek().rank == Rank.TEN){
             this.pile = new Stack<>();
        } 
-       this.notifyObservers();
        return true;
     }
 
@@ -102,9 +95,13 @@ public class Rules {
 
     // need to make a take hand function (implement takeall, and take one)
     public Card takeCard() { 
+        System.out.println("Taking card");
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card temp = this.deck.takeCard();
+        if(temp == null)
+            return null;
         curPlayer.addCard(temp);
+        System.out.println(curPlayer);
         return temp;
     }
 
