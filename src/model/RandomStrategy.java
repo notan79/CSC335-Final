@@ -1,4 +1,4 @@
-package model.model;
+package model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,14 +32,14 @@ public class RandomStrategy implements Strategy {
         } else {
             // If you're out of other cards, play a random face down card
             // adds the size of the main hand and face up hand to ensure its on the right index and hand
-            return mainHand.size() + faceUpHand.size() + random.nextInt(faceDownHand.size());
+            return mainHand.size() + faceUpHand.size() + this.random.nextInt(faceDownHand.size());
         }
         
         // Check which cards are valid plays
         int index = 0;
         for (Card card : currentHand) {
             // Use Rules.isValidMove
-            if (rules.isValidMove(card)) {
+            if (this.rules.isValidMove(card)) {
                 validCards.add(index + cardPositionAdjustment);
             }
             index++;
@@ -51,7 +51,7 @@ public class RandomStrategy implements Strategy {
         }
         
         // Choose a random valid card to play from the validCards list 
-        return validCards.get(random.nextInt(validCards.size()));
+        return validCards.get(this.random.nextInt(validCards.size()));
     }
 
 
@@ -59,7 +59,7 @@ public class RandomStrategy implements Strategy {
     public Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand) {
         // Randomly decide whether to swap
         // If the random booleon is yes, and the main/hand and FaceUpHands aren't empty, then swap
-        if (random.nextBoolean() && !mainHand.isEmpty() && !faceUpHand.isEmpty()) {
+        if (this.random.nextBoolean() && !mainHand.isEmpty() && !faceUpHand.isEmpty()) {
             Card[] cardsToSwap = new Card[2];
         
         // Converts the sets to lists
@@ -67,8 +67,8 @@ public class RandomStrategy implements Strategy {
         ArrayList<Card> faceUpHandList = new ArrayList<>(faceUpHand);
         
         // Gets random cards from each hand
-        cardsToSwap[0] = mainHandList.get(random.nextInt(mainHandList.size()));
-        cardsToSwap[1] = faceUpHandList.get(random.nextInt(faceUpHandList.size()));
+        cardsToSwap[0] = mainHandList.get(this.random.nextInt(mainHandList.size()));
+        cardsToSwap[1] = faceUpHandList.get(this.random.nextInt(faceUpHandList.size()));
         
         return cardsToSwap;
     }
@@ -81,7 +81,7 @@ public class RandomStrategy implements Strategy {
     public int whatFaceDownCard(ArrayList<Card> faceDownHand) {
         // Pick a random face down card
         if (!faceDownHand.isEmpty()) {
-            return random.nextInt(faceDownHand.size());
+            return this.random.nextInt(faceDownHand.size());
         }
         // if empty
         return 0;
