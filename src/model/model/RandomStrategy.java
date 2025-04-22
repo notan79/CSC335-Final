@@ -1,4 +1,4 @@
-package model.model;
+package model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,13 +7,7 @@ import java.util.Stack;
 
 public class RandomStrategy implements Strategy {
     private Random random = new Random();
-    // I want to use isValidMove from rules
-    private Rules rules;
 
-    // Constructor that takes a Rules object
-    public RandomStrategy(Rules rules) {
-        this.rules = rules;
-    }
     
     @Override
     public int whatCardToPlay(HashSet<Card> mainHand, HashSet<Card> faceUpHand, ArrayList<Card> faceDownHand, Stack<Card> pile, boolean hasMainCards, boolean hasFaceUpCards) {
@@ -39,7 +33,7 @@ public class RandomStrategy implements Strategy {
         int index = 0;
         for (Card card : currentHand) {
             // Use Rules.isValidMove
-            if (rules.isValidMove(card)) {
+            if (rules.isValidMove(card, pile)) {
                 validCards.add(index + cardPositionAdjustment);
             }
             index++;
@@ -54,6 +48,16 @@ public class RandomStrategy implements Strategy {
         return validCards.get(random.nextInt(validCards.size()));
     }
 
+    private boolean isValidMove(Card c, Stack<Card> pile) {
+        if (c.rank == Rank.TEN || c.rank == Rank.TWO || pile.empty())
+            return true;
+
+        Card topOfPile = pile.peek();
+        if (topOfPile.rank == Rank.SEVEN)
+            return c.rank.ordinal() <= topOfPile.rank.ordinal();
+
+        return c.rank.ordinal() >= topOfPile.rank.ordinal();
+    }
 
     @Override
     public Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand) {
