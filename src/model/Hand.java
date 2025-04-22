@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class Hand implements Iterable<Card>{
-    private final HashSet<Card> mainHand = new HashSet<>(5);
-    private final HashSet<Card> faceUpHand = new HashSet<>(3);
+    private final ArrayList<Card> mainHand = new ArrayList<>(5);
+    private final ArrayList<Card> faceUpHand = new ArrayList<>(3);
     private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
 
     public boolean addCard(Card c){
@@ -47,14 +47,13 @@ public class Hand implements Iterable<Card>{
 
     // Precondition: 0 <= num < this.totalCards
     public Card getCard(int num){
-        int i = 0;
-        for(Card c: this){
-            if(i == num)
-                return c;
-            ++i;
+        if(this.totalCards() > 6){
+            return this.mainHand.get(num);
+        }else if(this.totalCards() > 3){
+            return this.faceUpHand.get(num);
+        }else{
+            return this.faceDownHand.get(num);
         }
-        // Cannot happen
-        return null;
     }
 
     // C1 is from mainHand and c2 is from faceUp hand
@@ -71,12 +70,12 @@ public class Hand implements Iterable<Card>{
     }
 
 
-    public HashSet<Card> getFaceUpHand() {
-        return new HashSet<>(this.faceUpHand);
+    public ArrayList<Card> getFaceUpHand() {
+        return new ArrayList<>(this.faceUpHand);
     }
 
-    public HashSet<Card> getMainHand() {
-        return new HashSet<>(this.mainHand);
+    public ArrayList<Card> getMainHand() {
+        return new ArrayList<>(this.mainHand);
     }
 
     // added a getter for the face down hand

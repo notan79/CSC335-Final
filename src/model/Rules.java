@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
+import view.Observer;
 
 
 public class Rules {
@@ -24,6 +25,7 @@ public class Rules {
     private Stack<Card> pile;
     private ArrayList<Hand> players; // stores all the players 
     private Turn turn = Turn.PLAYER1;
+    private ArrayList<Observer> observers = new ArrayList<>();
    
 
     public Rules() { 
@@ -42,11 +44,27 @@ public class Rules {
         this.pile.push(this.deck.takeCard());
     }
 
+    public void registerObserver(Observer observer) {
+		this.observers.add(observer);
+	}
+	
+	public void deregisterObserver(Observer observer) {
+		this.observers.remove(observer);
+	}
+	
+	/* PRIVATE METHODS */
+	private void notifyObservers() {
+        System.out.println(this.players.get(0));
+		for(Observer o : this.observers) {
+			o.cardPlayed(this.takeCard());
+		}
+	}
+
     public Card viewTopCard() { 
-        if (pile.isEmpty()) {
+        if (this.pile.isEmpty()) {
             return null;
         }
-        return pile.peek();
+        return this.pile.peek();
     }
 
     
@@ -60,6 +78,7 @@ public class Rules {
     public boolean playCard(int num){
        Hand curPlayer = this.players.get(this.turn.ordinal());
        Card c = curPlayer.getCard(num);
+       System.out.println(c);
        if(!this.isValidMove(c))
             return false; 
     
@@ -67,6 +86,7 @@ public class Rules {
        if(this.pile.peek().rank == Rank.TEN){
             this.pile = new Stack<>();
        } 
+       this.notifyObservers();
        return true;
     }
 
@@ -81,9 +101,11 @@ public class Rules {
     }
 
     // need to make a take hand function (implement takeall, and take one)
-    public void takeCard() { 
+    public Card takeCard() { 
         Hand curPlayer = this.players.get(this.turn.ordinal());
-        curPlayer.addCard(this.deck.takeCard());
+        Card temp = this.deck.takeCard();
+        curPlayer.addCard(temp);
+        return temp;
     }
 
     public void takeAll(){
@@ -110,7 +132,7 @@ public class Rules {
 
     public boolean hasValidMove(){
         Hand curPlayer = this.players.get(this.turn.ordinal());
-        HashSet<Card> curHand;
+        ArrayList<Card> curHand;
         int cardCount = curPlayer.totalCards();
 
         // Main hand
@@ -130,6 +152,18 @@ public class Rules {
              return true;
         }
         return false;
+    }
+
+    public ArrayList<Card> getFaceUpHand(){
+        return new ArrayList<>(this.players.get(this.turn.ordinal()).getFaceUpHand());
+    }
+
+    public ArrayList<Card> getFaceDownHand(){
+        return this.players.get(this.turn.ordinal()).getFaceDownHand();
+    }
+
+    public ArrayList<Card> getMainHand(){
+        return new ArrayList<>(this.players.get(this.turn.ordinal()).getMainHand());
     }
 
     public String toString() {
