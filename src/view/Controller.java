@@ -62,6 +62,20 @@ public class Controller implements ActionListener {
                     System.out.println("Invalid move.");
                 }
             }
+        } else if(cmd.startsWith("D")){
+            if(this.model.getMainHand().size() > 0 || this.model.getFaceUpHand().size() > 0)
+                System.out.println("Face-down play not allowed: main hand or face up hand not empty.");
+            else{
+                int index = Integer.parseInt(cmd.substring(1));
+                boolean success = this.model.playCard(index);
+
+                if (success) {
+                    this.model.takeCard();
+                    this.updateView();
+                } else {
+                    System.out.println("Invalid move.");
+                }
+            }
         }
 
         // You could also handle "deck" click for drawing manually if you want
@@ -69,6 +83,10 @@ public class Controller implements ActionListener {
             this.model.takeCard();
             this.updateView();
         }
+    }
+
+    public void nextTurn(){
+        this.model.nextTurn();
     }
 
     public void updateView() {

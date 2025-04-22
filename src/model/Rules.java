@@ -96,6 +96,16 @@ public class Rules {
        return true;
     }
 
+    // Returns true if the game is continuing, and false otherwise. Updates to the next turn
+    public boolean nextTurn(boolean start){
+        for(Hand p : this.players){
+            if(p.totalCards() == 0)
+                return false;
+        }
+        this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
+       return true;
+    }
+
     // need to make a take hand function (implement takeall, and take one)
     public Card takeCard() { 
         System.out.println("Taking card");

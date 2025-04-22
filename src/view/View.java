@@ -51,7 +51,8 @@ public class View extends JFrame {
 		this.deckButton.setActionCommand("deck");
 		this.mainPanel.add(this.deckButton);
 
-		// bottom player? 
+
+		// PLAYER 1:
 		ArrayList<Card> faceUp = this.controller.getFaceUpHand();
 		for(int i = 0; i < 3; ++i){
 			int j = i;
@@ -64,7 +65,6 @@ public class View extends JFrame {
 		}
 
 
-		// main hand
 		ArrayList<Card> main = this.controller.getMainHand();
 		for(int i = 0; i < 5; ++i){
 			int j = i;
@@ -78,7 +78,6 @@ public class View extends JFrame {
 			this.controller.addObserver(temp);
 		}
 
-		// bottom player? 
 		ArrayList<Card> faceDown = this.controller.getFaceDownHand();
 		for(int i = 0; i < 3; ++i){
 			int j = i;
@@ -90,8 +89,12 @@ public class View extends JFrame {
 			this.faceUpButtons.add(temp);
 		}
 
-		
+		// PLAYER 2:
+		this.controller.nextTurn();
 
+
+
+		
 
 		//adding a window listener for closing the app
 		this.addWindowListener(new WindowAdapter() {
@@ -170,7 +173,7 @@ public class View extends JFrame {
 		// Update face-up hand buttons
 		ArrayList<Card> faceDown = this.controller.getFaceDownHand();
 		for (int i = 0; i < faceDown.size(); i++) {
-			CardButton temp = new CardButton("Hidden...");
+			CardButton temp = new CardButton("Hidden..." + faceDown.get(i).toString());
 			temp.setBounds(660 + i * 80, 750, 70, 50);
 			temp.setActionCommand("F" + i);
 			temp.addActionListener(this.controller);
