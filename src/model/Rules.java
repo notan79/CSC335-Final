@@ -1,16 +1,13 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Stack;
-
 
 public class Rules {
     public static void main(String args[]){
         Rules game = new Rules();
         System.out.println(game.toString()); 
         System.out.println("DECK: " + game.deck);
-
 
         System.out.println(Turn.values()[(game.turn.ordinal()+1) % 4]);
 
@@ -24,7 +21,6 @@ public class Rules {
     private Stack<Card> pile;
     private ArrayList<Hand> players; // stores all the players 
     private Turn turn = Turn.PLAYER1;
-   
 
     public Rules() { 
         this.deck = new Deck();
@@ -42,7 +38,14 @@ public class Rules {
         this.pile.push(this.deck.takeCard());
     }
 
-    
+
+    public Card viewTopCard() { 
+        if (this.pile.isEmpty()) {
+            return null;
+        }
+        return this.pile.peek();
+    }
+
     // Precon: c1 and c2 are in the player's hand
     public void swapCards(Card c1, Card c2) { 
         // swaps the card from the current hand (5) to the face up hand (3)
@@ -51,11 +54,13 @@ public class Rules {
     }
 
     public boolean playCard(int num){
+        System.out.println("Playing: " + num);
        Hand curPlayer = this.players.get(this.turn.ordinal());
        Card c = curPlayer.getCard(num);
+       System.out.println(c);
        if(!this.isValidMove(c))
             return false; 
-    
+
        this.pile.push(curPlayer.playCard(c));  
        if(this.pile.peek().rank == Rank.TEN){
             this.pile = new Stack<>();
@@ -69,14 +74,34 @@ public class Rules {
             if(p.totalCards() == 0)
                 return false;
         }
-       this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
+        if(!this.pile.isEmpty() && this.pile.peek().rank == Rank.FIVE)
+            this.turn = Turn.values()[(this.turn.ordinal() + 2 ) % 4];
+        else
+            this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
+       return true;
+    }
+
+    // Returns true if the game is continuing, and false otherwise. Updates to the next turn
+    public boolean nextTurn(boolean start){
+        for(Hand p : this.players){
+            if(p.totalCards() == 0)
+                return false;
+        }
+        this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
        return true;
     }
 
     // need to make a take hand function (implement takeall, and take one)
-    public void takeCard() { 
+    public Card takeCard() { 
+        System.out.println("Taking card");
+        System.out.println(pile);
         Hand curPlayer = this.players.get(this.turn.ordinal());
-        curPlayer.addCard(this.deck.takeCard());
+        Card temp = this.deck.takeCard();
+        if(temp == null)
+            return null;
+        curPlayer.addCard(temp);
+        System.out.println(curPlayer);
+        return temp;
     }
 
     public void takeAll(){
@@ -103,13 +128,13 @@ public class Rules {
 
     public boolean hasValidMove(){
         Hand curPlayer = this.players.get(this.turn.ordinal());
-        HashSet<Card> curHand;
+        ArrayList<Card> curHand;
         int cardCount = curPlayer.totalCards();
 
         // Main hand
         if(cardCount > 6)
             curHand = curPlayer.getMainHand();
-        
+
         // Face up hand
         else if(cardCount > 3)
             curHand = curPlayer.getFaceUpHand();
@@ -117,7 +142,7 @@ public class Rules {
         // Has to "guess"
         else 
             return true;
-        
+
         for(Card c : curHand){
             if(this.isValidMove(c))
              return true;
@@ -125,9 +150,20 @@ public class Rules {
         return false;
     }
 
+    public ArrayList<Card> getFaceUpHand(){
+        return new ArrayList<>(this.players.get(this.turn.ordinal()).getFaceUpHand());
+    }
+
+    public ArrayList<Card> getFaceDownHand(){
+        return this.players.get(this.turn.ordinal()).getFaceDownHand();
+    }
+
+    public ArrayList<Card> getMainHand(){
+        return new ArrayList<>(this.players.get(this.turn.ordinal()).getMainHand());
+    }
+
     public String toString() {
         String s = "PLAYER1 = " + this.players.get(0) + "\nPLAYER2 = " + this.players.get(1) + "\nPLAYER3 = " + this.players.get(2) + "\nPLAYER4 = " + this.players.get(3);
         return s; 
-    }
-    
+    }    
 }
