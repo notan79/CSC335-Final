@@ -7,10 +7,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.Rules;
+import model.Hand;
 
 public class View extends JFrame {
 
 	private Rules model = new Rules(); 
+	private Hand bottomPlayer = new Hand();
 	
 	public View() {
 		this.setTitle("Palace Game Demo");
@@ -38,6 +40,7 @@ public class View extends JFrame {
 		JButton topButton = new JButton("top");
 		topButton.setActionCommand("top");
 		mainPanel.add(topButton);
+
 
 
 
