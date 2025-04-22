@@ -1,3 +1,5 @@
+import model.Rank;
+import model.Suit;
 import view.View;
 
 public class Main {
