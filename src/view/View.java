@@ -1,18 +1,20 @@
 package view;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class View extends JFrame{
-	
+import model.Rules;
+
+public class View extends JFrame {
+
+	private Rules model = new Rules(); 
 	
 	public View() {
-		this.setTitle("MVC Demo");
-		this.setSize(400,400);
+		this.setTitle("Palace Game Demo");
+		this.setSize(1920,1080);
 		this.setUp();
 	}
 	
@@ -21,16 +23,46 @@ public class View extends JFrame{
 		//setting up the main panel
 		JPanel mainPanel = new JPanel();
 		this.add(mainPanel);
+		mainPanel.setLayout(null);
+
+
+		// pull deck
+
+		JButton deckButton = new JButton(model.viewTopCard().toString());
+		deckButton.setBounds(735, 400, 70, 50);
+		deckButton.setActionCommand("deck");
+		mainPanel.add(deckButton);
 		
-		//setting up the switch button
-		JButton incButton = new JButton("increment");
-		incButton.setActionCommand("inc");
-		mainPanel.add(incButton);
-		
+		// top player? 
 		//setting up the count button
-		JButton decButton = new JButton("decrement");
-		decButton.setActionCommand("dec");
-		mainPanel.add(decButton);
+		JButton topButton = new JButton("top");
+		topButton.setActionCommand("top");
+		mainPanel.add(topButton);
+
+
+
+		// bottom player? 
+		JButton bottomButtonL = new JButton("BL");
+		bottomButtonL.setBounds(660, 750, 70, 50);
+		bottomButtonL.setActionCommand("BL");
+		mainPanel.add(bottomButtonL);
+
+		// bottom player? 
+		JButton bottomButton = new JButton("bottom");
+		bottomButton.setBounds(740, 750, 70, 50);
+		bottomButton.setActionCommand("bottom");
+		mainPanel.add(bottomButton);
+
+		// bottom player? 
+		JButton bottomButtonR = new JButton("BR");
+		bottomButtonR.setBounds(820, 750, 70, 50);
+		bottomButtonR.setActionCommand("BR");
+		mainPanel.add(bottomButtonR);
+
+
+
+
+
 		
 		//adding a window listener for closing the app
 		this.addWindowListener(new WindowAdapter() {
@@ -39,6 +71,9 @@ public class View extends JFrame{
 			}
 		});
 		
+
+
+
 		this.setVisible(true);
 	}
 	

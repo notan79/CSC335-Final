@@ -42,6 +42,13 @@ public class Rules {
         this.pile.push(this.deck.takeCard());
     }
 
+    public Card viewTopCard() { 
+        if (pile.isEmpty()) {
+            return null;
+        }
+        return pile.peek();
+    }
+
     
     // Precon: c1 and c2 are in the player's hand
     public void swapCards(Card c1, Card c2) { 
