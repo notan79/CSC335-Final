@@ -128,6 +128,5 @@ public class Rules {
     public String toString() {
         String s = "PLAYER1 = " + this.players.get(0) + "\nPLAYER2 = " + this.players.get(1) + "\nPLAYER3 = " + this.players.get(2) + "\nPLAYER4 = " + this.players.get(3);
         return s; 
-    }
-    
+    }    
 }
