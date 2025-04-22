@@ -44,7 +44,19 @@ public class Controller implements ActionListener {
 
         // Handle face-up cards if needed
         else if (cmd.startsWith("F")) {
-            System.out.println("Face-up play not implemented yet.");
+            if(this.model.getMainHand().size() > 0)
+                System.out.println("Face-up play not allowed: main hand not empty.");
+            else{
+                int index = Integer.parseInt(cmd.substring(1));
+                boolean success = this.model.playCard(index);
+
+                if (success) {
+                    this.model.takeCard();
+                    this.updateView();
+                } else {
+                    System.out.println("Invalid move.");
+                }
+            }
         }
 
         // You could also handle "deck" click for drawing manually if you want

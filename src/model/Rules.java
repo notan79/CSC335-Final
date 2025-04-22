@@ -89,7 +89,10 @@ public class Rules {
             if(p.totalCards() == 0)
                 return false;
         }
-       this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
+        if(this.pile.peek().rank == Rank.FIVE)
+            this.turn = Turn.values()[(this.turn.ordinal() + 2 ) % 4];
+        else
+            this.turn = Turn.values()[(this.turn.ordinal() + 1 ) % 4];
        return true;
     }
 
