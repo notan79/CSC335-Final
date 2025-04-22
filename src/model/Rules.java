@@ -65,6 +65,7 @@ public class Rules {
        if(this.pile.peek().rank == Rank.TEN){
             this.pile = new Stack<>();
        } 
+       System.out.println(this.pile);
        return true;
     }
 
