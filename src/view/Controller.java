@@ -30,7 +30,12 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
 
-        if (cmd.startsWith("C")) {
+        if(!this.model.hasValidMove()){
+            this.model.takeCard();
+            this.updateView();
+        }
+
+        else if (cmd.startsWith("C")) {
             int index = Integer.parseInt(cmd.substring(1));
             boolean success = this.model.playCard(index);
 
@@ -76,6 +81,10 @@ public class Controller implements ActionListener {
 
     public ArrayList<Card> getFaceUpHand() {
         return this.model.getFaceUpHand();
+    }
+
+    public ArrayList<Card> getFaceDownHand() {
+        return this.model.getFaceDownHand();
     }
 
     public ArrayList<Card> getMainHand() {

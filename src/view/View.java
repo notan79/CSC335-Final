@@ -56,7 +56,7 @@ public class View extends JFrame {
 		for(int i = 0; i < 3; ++i){
 			int j = i;
 			CardButton temp = new CardButton(faceUp.get(i).toString());
-			temp.setBounds(660+i*80, 750, 70, 50);
+			temp.setBounds(660+i*80, 700, 70, 50);
 			temp.setActionCommand("F" + String.valueOf(j));
 			temp.addActionListener(this.controller);
 			this.mainPanel.add(temp);
@@ -78,6 +78,20 @@ public class View extends JFrame {
 			this.controller.addObserver(temp);
 		}
 
+		// bottom player? 
+		ArrayList<Card> faceDown = this.controller.getFaceDownHand();
+		for(int i = 0; i < 3; ++i){
+			int j = i;
+			CardButton temp = new CardButton(faceDown.get(i).toString());
+			temp.setBounds(660+i*80, 750, 70, 50);
+			temp.setActionCommand("D" + String.valueOf(j));
+			temp.addActionListener(this.controller);
+			this.mainPanel.add(temp);
+			this.faceUpButtons.add(temp);
+		}
+
+		
+
 
 		//adding a window listener for closing the app
 		this.addWindowListener(new WindowAdapter() {
@@ -98,10 +112,31 @@ public class View extends JFrame {
 			this.remove(b);
 			this.mainPanel.remove(b);
 		} 
+
+		for (CardButton b : this.faceDownButtons){
+			this.remove(b);
+			this.mainPanel.remove(b);
+		} 
 	
 		this.mainButtons.clear();
 		this.faceUpButtons.clear();
+		this.faceDownButtons.clear();
 	
+		this.drawMainHand();
+		this.drawFaceUpHand();
+		this.drawFaceDownHand();
+	
+		// Update pile button
+		if(this.controller.viewTopCard() == null){
+			this.deckButton.setText("Empty");
+		}else
+			this.deckButton.setText(this.controller.viewTopCard().toString());
+	
+		this.revalidate();
+		this.repaint();
+	}
+
+	private void drawMainHand(){
 		// Update main hand buttons
 		ArrayList<Card> main = this.controller.getMainHand();
 		System.out.println("Main: " + main);
@@ -115,26 +150,33 @@ public class View extends JFrame {
 			this.mainPanel.add(temp);
 			this.mainButtons.add(temp);
 		}
-	
+	}
+
+	private void drawFaceUpHand(){
 		// Update face-up hand buttons
 		ArrayList<Card> faceUp = this.controller.getFaceUpHand();
 		for (int i = 0; i < faceUp.size(); i++) {
 			CardButton temp = new CardButton(faceUp.get(i).toString());
-			temp.setBounds(660 + i * 80, 750, 70, 50);
+			temp.setBounds(660 + i * 80, 700, 70, 50);
 			temp.setActionCommand("F" + i);
 			temp.addActionListener(this.controller);
 			this.add(temp);
 			this.mainPanel.add(temp);
 			this.faceUpButtons.add(temp);
 		}
-	
-		// Update pile button
-		if(this.controller.viewTopCard() == null){
-			this.deckButton.setText("Empty");
-		}else
-			this.deckButton.setText(this.controller.viewTopCard().toString());
-	
-		this.revalidate();
-		this.repaint();
+	}
+
+	private void drawFaceDownHand(){
+		// Update face-up hand buttons
+		ArrayList<Card> faceDown = this.controller.getFaceDownHand();
+		for (int i = 0; i < faceDown.size(); i++) {
+			CardButton temp = new CardButton("Hidden...");
+			temp.setBounds(660 + i * 80, 750, 70, 50);
+			temp.setActionCommand("F" + i);
+			temp.addActionListener(this.controller);
+			this.add(temp);
+			this.mainPanel.add(temp);
+			this.faceDownButtons.add(temp);
+		}
 	}
 }
