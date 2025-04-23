@@ -2,14 +2,13 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Stack;
 
 public interface Strategy {
 
     // boolean hasMainCards: checks if there are stil cards in the players main deck
     // boolean hasFaceUpCards: checks if there are stil cards in the players face up deck
     // Returns the index of the card to play, if theres no valid move it returns -1
-    int whatCardToPlay(HashSet<Card> mainHand, HashSet<Card> faceUpHand, ArrayList<Card> faceDownHand, Stack<Card> pile, boolean hasMainCards, boolean hasFaceUpCards);
+    int whatCardToPlay(ArrayList<Card> mainHand, ArrayList<Card> faceUpHand, ArrayList<Card> faceDownHand, Card topOfPile, boolean hasMainCards, boolean hasFaceUpCards);
     
     // This returns an array of two cards to swap
     // Returns null if you don't want to swap
