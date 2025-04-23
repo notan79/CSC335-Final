@@ -57,27 +57,38 @@ public class Rules {
     public boolean playCard(int num) {
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card c = curPlayer.getCard(num);
-    
-        // Remove card from hand *before* checking validity
-        Card playedCard = curPlayer.playCard(c);
-    
-        if (playedCard == null) return false; // just in case
-    
-        System.out.println("Attempting to play: " + playedCard);
-    
-        // Push the card to the pile before checking if valid
-        this.pile.push(playedCard);
-    
-        if (!this.isValidMove(playedCard)) {
+        
+        if (c == null) {
+            System.out.println("Invalid card index: " + num);
+            return false; // just in case
+        }
+        
+        System.out.println("Attempting to play: " + c);
+        
+        // Check if the move is valid before removing it from the hand
+        if (!this.isValidMove(c)) {
+            // Card is not valid, don't remove it
+            this.pile.push(c); // Still push to pile for consistency
             this.takeAll(); // player picks up the entire pile (including the card just played)
             return false;
         }
-    
+        
+        // Remove the card from the player's hand
+        Card playedCard = curPlayer.playCard(c);
+        
+        if (playedCard == null) {
+            System.out.println("Error playing card");
+            return false; // just in case
+        }
+        
+        // Push the card to the pile
+        this.pile.push(playedCard);
+        
         // Special rule: clear pile on TEN
         if (playedCard.rank == Rank.TEN) {
             this.pile.clear();
         }
-    
+        
         return true;
     }
     

@@ -550,10 +550,11 @@ public class PalaceGameGUI extends JFrame {
      * Advances to the next player's turn
      */
     private void nextTurn() {
+        int winner = this.currentPlayerIndex;
         boolean gameContinues = this.game.nextTurn();
         if (!gameContinues) {
             // Find winner
-            int winner = (this.game.getTurn() + 3) % 4;
+            // int winner = (this.game.getTurn() + 3) % 4;
             
             JOptionPane.showMessageDialog(this, "Game Over! Player " + (winner + 1) + " wins!");
                 
