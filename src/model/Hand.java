@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class Hand implements Iterable<Card>{
@@ -9,7 +8,11 @@ public class Hand implements Iterable<Card>{
     private final ArrayList<Card> faceUpHand = new ArrayList<>(3);
     private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
 
-    public boolean addCard(Card c){
+    public void addCard(Card c){
+        this.mainHand.add(c);
+    }
+
+    public boolean addCardBeginning(Card c){
         // Add to face down first
         if(this.faceDownHand.size() < 3){
             this.faceDownHand.add(c);
