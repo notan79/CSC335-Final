@@ -31,33 +31,43 @@ public class Hand implements Iterable<Card>{
         return false;
     }
 
-    // Precondition: a valid card is picked
-    public Card playCard(Card c){        
-        // Remove from mainHand first
-        if(this.mainHand.size() != 0){
+    public Card playCard(Card c) {        
+        // Remove from the mainHand first
+        if(this.mainHand.contains(c)) {
             this.mainHand.remove(c);
+            return c;
         }
         // Remove from faceUp next
-        else if(this.faceUpHand.size() != 0){
+        else if(this.faceUpHand.contains(c)) {
             this.faceUpHand.remove(c);
+            return c;
         }
         // Remove from faceDown last
-        else{
+        else if(this.faceDownHand.contains(c)) {
             this.faceDownHand.remove(c);
+            return c;
         }
-        return c; 
+        return null;
     }
 
-    // Precondition: 0 <= num < this.totalCards
     public Card getCard(int num){
-        if(this.totalCards() > 6){
+        // Check if the index is in the main hand range
+        if(num < this.mainHand.size()){
             return this.mainHand.get(num);
-        }else if(this.totalCards() > 3){
+        } 
+        // ADJUST index and check if it's in the face up hand range
+        num -= this.mainHand.size();
+        if(num < this.faceUpHand.size()){
             return this.faceUpHand.get(num);
-        }else{
+        }
+        // Adjust index again and check if it's in the face down hand range
+        num -= this.faceUpHand.size();
+        if(num < this.faceDownHand.size()){
             return this.faceDownHand.get(num);
         }
+        return null;
     }
+
 
     // C1 is from mainHand and c2 is from faceUp hand
     public void swapCards(Card c1, Card c2){
