@@ -164,6 +164,10 @@ public class Rules {
         return false;
     }
 
+    public boolean isDeckEmpty(){
+        return this.deck.isEmpty();
+    }
+
     public ArrayList<Card> getFaceUpHand(){
         return new ArrayList<>(this.players.get(this.turn.ordinal()).getFaceUpHand());
     }
@@ -174,6 +178,22 @@ public class Rules {
 
     public ArrayList<Card> getMainHand(){
         return new ArrayList<>(this.players.get(this.turn.ordinal()).getMainHand());
+    }
+
+    public ArrayList<Card> getFaceUpHand(int num){
+        return new ArrayList<>(this.players.get(num).getFaceUpHand());
+    }
+
+    public ArrayList<Card> getFaceDownHand(int num){
+        return this.players.get(num).getFaceDownHand();
+    }
+
+    public ArrayList<Card> getMainHand(int num){
+        return new ArrayList<>(this.players.get(num).getMainHand());
+    }
+
+    public int getTurn(){
+        return this.turn.ordinal();
     }
 
     public String toString() {
