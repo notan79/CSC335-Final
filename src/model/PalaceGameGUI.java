@@ -2,13 +2,14 @@ package model;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
  * A GUI for the Palace Card Game with proper player control and draw pile mechanics
  */
 public class PalaceGameGUI extends JFrame {
+    
+    
     // Game components
     private Rules game;
     
@@ -18,12 +19,13 @@ public class PalaceGameGUI extends JFrame {
     private JPanel pilePanel;
     private JLabel pileLabel;
     private JButton takeAllButton;
-    private JButton drawCardButton;
     private JLabel statusLabel;
     private JLabel deckLabel;
     
     // Game state
     private int currentPlayerIndex = 0;
+
+    private Strategy RS = new RandomStrategy();
     
     /**
      * Constructor - sets up the game and UI
@@ -52,6 +54,7 @@ public class PalaceGameGUI extends JFrame {
         northPanel.add(this.playerPanels[2], BorderLayout.CENTER);
         northPanel.setBorder(BorderFactory.createTitledBorder("Player 3"));
         
+        // EAST
         JPanel eastPanel = new JPanel(new BorderLayout());
         eastPanel.add(this.playerPanels[1], BorderLayout.CENTER);
         eastPanel.setBorder(BorderFactory.createTitledBorder("Player 2"));
@@ -60,9 +63,11 @@ public class PalaceGameGUI extends JFrame {
         southPanel.add(this.playerPanels[0], BorderLayout.CENTER);
         southPanel.setBorder(BorderFactory.createTitledBorder("Player 1 (You)"));
         
+        // WEST
         JPanel westPanel = new JPanel(new BorderLayout());
         westPanel.add(this.playerPanels[3], BorderLayout.CENTER);
         westPanel.setBorder(BorderFactory.createTitledBorder("Player 4"));
+
         
         this.mainPanel.add(northPanel, BorderLayout.NORTH);
         this.mainPanel.add(eastPanel, BorderLayout.EAST);
@@ -106,18 +111,6 @@ public class PalaceGameGUI extends JFrame {
         });
         buttonPanel.add(this.takeAllButton);
         
-        // Draw card button
-        this.drawCardButton = new JButton("Draw Card");
-        this.drawCardButton.addActionListener(e -> {
-            Card drawnCard = this.game.takeCard();
-            if (drawnCard != null) {
-                JOptionPane.showMessageDialog(this, "Drew card: " + this.getDisplayRank(drawnCard.rank) + this.getSuitSymbol(drawnCard.suit));
-                this.updateUI();
-            } else {
-                JOptionPane.showMessageDialog(this, "No more cards in the deck!");
-            }
-        });
-        buttonPanel.add(this.drawCardButton);
         
         // Create status label
         this.statusLabel = new JLabel("Game Started! Player 1's Turn", JLabel.CENTER);
@@ -190,7 +183,6 @@ public class PalaceGameGUI extends JFrame {
         
         // Enable/disable controls based on whose turn it is
         this.takeAllButton.setEnabled(isPlayerTurn);
-        this.drawCardButton.setEnabled(isPlayerTurn);
         
         // Update status message
         this.statusLabel.setText("Player " + (this.currentPlayerIndex + 1) + "'s turn");
@@ -215,10 +207,8 @@ public class PalaceGameGUI extends JFrame {
         boolean isDeckEmpty = this.isDeckEmpty();
         if (!isDeckEmpty) {
             this.deckLabel.setText("Deck: Cards Available");
-            this.drawCardButton.setEnabled(this.currentPlayerIndex == 0);
         } else {
             this.deckLabel.setText("Deck: Empty");
-            this.drawCardButton.setEnabled(false);
         }
     }
     
@@ -588,67 +578,39 @@ public class PalaceGameGUI extends JFrame {
     }
     
     /**
-     * Makes a move for an AI player
-     */
+ * Makes a move for an AI player using the RandomStrategy
+ */
     private void simulateAITurn() {
-        // Get the player's hands
         ArrayList<Card> mainHand = this.getMainHand(this.currentPlayerIndex);
         ArrayList<Card> faceUpHand = this.getFaceUpHand(this.currentPlayerIndex);
         ArrayList<Card> faceDownHand = this.getFaceDownHand(this.currentPlayerIndex);
-        
-        // Simple AI strategy: play first valid card or take all
-        boolean validMove = false;
-        
-        // Try main hand first
-        for (int i = 0; i < mainHand.size(); i++) {
-            Card card = mainHand.get(i);
-            if (this.game.isValidMove(card)) {
-                this.game.playCard(i);
-                validMove = true;
-                break;
-            }
-        }
-        
-        // Try face up hand if main hand is empty
-        if (!validMove && mainHand.isEmpty()) {
-            int offset = mainHand.size();
-            for (int i = 0; i < faceUpHand.size(); i++) {
-                Card card = faceUpHand.get(i);
-                if (this.game.isValidMove(card)) {
-                    this.game.playCard(offset + i);
-                    validMove = true;
-                    break;
-                }
-            }
-        }
-        
-        if (!validMove && mainHand.isEmpty() && faceUpHand.isEmpty() && !faceDownHand.isEmpty()) {
-            int offset = mainHand.size() + faceUpHand.size();
-            boolean success = this.game.playCard(offset);
-            
-            if (!success) {
-                System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " played a bad face down card. Picking up pile.");
-                this.game.takeAll();
-            }
-            
-            validMove = true; // Regardless of success, it's a move
-        }
-        
-        
-        if (!validMove) {
+
+        boolean hasMainCards = !mainHand.isEmpty();
+        boolean hasFaceUpCards = !faceUpHand.isEmpty();
+
+        int cardIndex = this.RS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
+
+        boolean moveMade = false;
+
+        if (cardIndex == -1) {
             this.game.takeAll();
         } else {
-            // AI draws a card if possible
-            if (!this.isDeckEmpty()) {
-                Card drawnCard = this.game.takeCard();
-                if (drawnCard != null) {
-                    System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " drew a card: " + this.getDisplayRank(drawnCard.rank) + this.getSuitSymbol(drawnCard.suit));
-                } else {
-                    System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " attempted to draw but deck was empty.");
-                }
+            moveMade = this.game.playCard(cardIndex);
+            if (!moveMade) {
+                // If invalid face-down card or unexpected issue, take all
+                this.game.takeAll();
             }
         }
-        
+
+        // If card was played successfully and main hand is under 5, draw a card
+        if (moveMade && !this.isDeckEmpty() && this.getMainHand(this.currentPlayerIndex).size() < 5) {
+            Card drawnCard = this.game.takeCard();
+            if (drawnCard != null) {
+                System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " drew: " +
+                    this.getDisplayRank(drawnCard.rank) + this.getSuitSymbol(drawnCard.suit));
+            }
+        }
+
         this.updateUI();
         this.nextTurn();
     }
