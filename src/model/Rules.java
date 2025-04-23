@@ -53,6 +53,7 @@ public class Rules {
         player.swapCards(c1, c2);
     }
 
+
     public boolean playCard(int num) {
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card c = curPlayer.getCard(num);
