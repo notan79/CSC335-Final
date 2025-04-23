@@ -101,7 +101,6 @@ public class PalaceGameGUI extends JFrame {
         this.takeAllButton = new JButton("Take All Cards");
         this.takeAllButton.addActionListener(e -> {
             this.game.takeAll();
-            this.printPileSize();
             this.updateUI();
             this.nextTurn();
         });
@@ -227,17 +226,7 @@ public class PalaceGameGUI extends JFrame {
      * Checks if the deck is empty
      */
     private boolean isDeckEmpty() {
-        try {
-            java.lang.reflect.Field deckField = Rules.class.getDeclaredField("deck");
-            deckField.setAccessible(true);
-            Object deck = deckField.get(this.game);
-            
-            java.lang.reflect.Method isEmptyMethod = deck.getClass().getMethod("isEmpty");
-            return (boolean) isEmptyMethod.invoke(deck);
-        } catch (Exception e) {
-            System.err.println("Error checking if deck is empty: " + e.getMessage());
-            return true; // Assume empty if there's an error
-        }
+        return this.game.isDeckEmpty();
     }
     
     /**
@@ -256,13 +245,6 @@ public class PalaceGameGUI extends JFrame {
         
         playerPanel.setLayout(new GridLayout(3, 1));
         
-        // Get the player's hand
-        ArrayList<Hand> players = this.getPlayers();
-        if (players == null || playerIndex >= players.size()) {
-            return;
-        }
-        
-        Hand playerHand = players.get(playerIndex);
         
         // Create each hand section
         ArrayList<Card> mainHand = this.getMainHand(playerIndex);
@@ -549,118 +531,29 @@ public class PalaceGameGUI extends JFrame {
      * Get the main hand for a player index using reflection
      */
     private ArrayList<Card> getMainHand(int playerIndex) {
-        if (playerIndex == this.currentPlayerIndex) {
-            try {
-                java.lang.reflect.Method method = Rules.class.getDeclaredMethod("getMainHand");
-                method.setAccessible(true);
-                return (ArrayList<Card>) method.invoke(this.game);
-            } catch (Exception e) {
-                System.err.println("Error getting main hand: " + e.getMessage());
-                return new ArrayList<>();
-            }
-        } else {
-            // For other players, use reflection on the Hand object
-            try {
-                ArrayList<Hand> players = this.getPlayers();
-                if (players != null && playerIndex < players.size()) {
-                    Hand hand = players.get(playerIndex);
-                    java.lang.reflect.Method method = Hand.class.getDeclaredMethod("getMainHand");
-                    return (ArrayList<Card>) method.invoke(hand);
-                }
-            } catch (Exception e) {
-                System.err.println("Error getting main hand for player " + playerIndex + ": " + e.getMessage());
-            }
-            return new ArrayList<>();
-        }
+        return this.game.getMainHand(playerIndex);
     }
     
     /**
      * Get the face up hand for a player index using reflection
      */
     private ArrayList<Card> getFaceUpHand(int playerIndex) {
-        if (playerIndex == this.currentPlayerIndex) {
-            try {
-                java.lang.reflect.Method method = Rules.class.getDeclaredMethod("getFaceUpHand");
-                method.setAccessible(true);
-                return (ArrayList<Card>) method.invoke(this.game);
-            } catch (Exception e) {
-                System.err.println("Error getting face up hand: " + e.getMessage());
-                return new ArrayList<>();
-            }
-        } else {
-            // For other players, use reflection on the Hand object
-            try {
-                ArrayList<Hand> players = this.getPlayers();
-                if (players != null && playerIndex < players.size()) {
-                    Hand hand = players.get(playerIndex);
-                    java.lang.reflect.Method method = Hand.class.getDeclaredMethod("getFaceUpHand");
-                    return (ArrayList<Card>) method.invoke(hand);
-                }
-            } catch (Exception e) {
-                System.err.println("Error getting face up hand for player " + playerIndex + ": " + e.getMessage());
-            }
-            return new ArrayList<>();
-        }
+        return this.game.getFaceUpHand(playerIndex);
     }
     
     /**
      * Get the face down hand for a player index using reflection
      */
     private ArrayList<Card> getFaceDownHand(int playerIndex) {
-        if (playerIndex == this.currentPlayerIndex) {
-            try {
-                java.lang.reflect.Method method = Rules.class.getDeclaredMethod("getFaceDownHand");
-                method.setAccessible(true);
-                return (ArrayList<Card>) method.invoke(this.game);
-            } catch (Exception e) {
-                System.err.println("Error getting face down hand: " + e.getMessage());
-                return new ArrayList<>();
-            }
-        } else {
-            // For other players, use reflection on the Hand object
-            try {
-                ArrayList<Hand> players = this.getPlayers();
-                if (players != null && playerIndex < players.size()) {
-                    Hand hand = players.get(playerIndex);
-                    java.lang.reflect.Method method = Hand.class.getDeclaredMethod("getFaceDownHand");
-                    return (ArrayList<Card>) method.invoke(hand);
-                }
-            } catch (Exception e) {
-                System.err.println("Error getting face down hand for player " + playerIndex + ": " + e.getMessage());
-            }
-            return new ArrayList<>();
-        }
+        return this.game.getFaceDownHand(playerIndex);
     }
     
-    /**
-     * Gets the list of players from the game
-     */
-    @SuppressWarnings("unchecked")
-    private ArrayList<Hand> getPlayers() {
-        try {
-            java.lang.reflect.Field playersField = Rules.class.getDeclaredField("players");
-            playersField.setAccessible(true);
-            return (ArrayList<Hand>) playersField.get(this.game);
-        } catch (Exception e) {
-            System.err.println("Error accessing players: " + e.getMessage());
-            return null;
-        }
-    }
     
     /**
      * Gets the current player index from the game
      */
     private int getCurrentPlayerFromGame() {
-        try {
-            java.lang.reflect.Field turnField = Rules.class.getDeclaredField("turn");
-            turnField.setAccessible(true);
-            Object turnValue = turnField.get(this.game);
-            java.lang.reflect.Method ordinalMethod = turnValue.getClass().getMethod("ordinal");
-            return (int) ordinalMethod.invoke(turnValue);
-        } catch (Exception e) {
-            System.err.println("Error accessing turn: " + e.getMessage());
-            return 0;
-        }
+        return this.game.getTurn();
     }
     
     /**
@@ -670,13 +563,10 @@ public class PalaceGameGUI extends JFrame {
         boolean gameContinues = this.game.nextTurn();
         if (!gameContinues) {
             // Find winner
-            ArrayList<Hand> players = this.getPlayers();
-            for (int i = 0; i < players.size(); i++) {
-                if (players.get(i).totalCards() == 0) {
-                    JOptionPane.showMessageDialog(this, "Game Over! Player " + (i + 1) + " wins!");
-                    break;
-                }
-            }
+            int winner = (this.game.getTurn() + 3) % 4;
+            
+            JOptionPane.showMessageDialog(this, "Game Over! Player " + (winner + 1) + " wins!");
+                
             return;
         }
         
@@ -747,7 +637,6 @@ public class PalaceGameGUI extends JFrame {
         
         if (!validMove) {
             this.game.takeAll();
-            this.printPileSize();
         } else {
             // AI draws a card if possible
             if (!this.isDeckEmpty()) {
@@ -757,7 +646,6 @@ public class PalaceGameGUI extends JFrame {
                 } else {
                     System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " attempted to draw but deck was empty.");
                 }
-            this.printPileSize();
             }
         }
         
@@ -765,23 +653,6 @@ public class PalaceGameGUI extends JFrame {
         this.nextTurn();
     }
 
-    /**
- * Prints the current pile size to the console
- */
-    private void printPileSize() {
-        try {
-            java.lang.reflect.Field pileField = Rules.class.getDeclaredField("pile");
-            pileField.setAccessible(true);
-            Object pile = pileField.get(this.game);
-
-            java.lang.reflect.Method sizeMethod = pile.getClass().getMethod("size");
-            int pileSize = (int) sizeMethod.invoke(pile);
-
-            System.out.println("Current pile size: " + pileSize);
-        } catch (Exception e) {
-            System.err.println("Error printing pile size: " + e.getMessage());
-        }  
-    }
     
     /**
      * Main method to run the application
