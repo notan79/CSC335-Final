@@ -31,7 +31,7 @@ public class Rules {
             // creates 4 players with full hands
             Hand player = new Hand(); 
             for (int j = 0; j < 11; j++) { // this gives the person their 11 cards 
-                player.addCard(this.deck.takeCard());
+                player.addCardBeginning(this.deck.takeCard());
             }
             this.players.add(player);
         }
@@ -53,21 +53,34 @@ public class Rules {
         player.swapCards(c1, c2);
     }
 
-    public boolean playCard(int num){
-        System.out.println("Playing: " + num);
-       Hand curPlayer = this.players.get(this.turn.ordinal());
-       Card c = curPlayer.getCard(num);
-       System.out.println(c);
-       if(!this.isValidMove(c))
-            return false; 
 
-       this.pile.push(curPlayer.playCard(c));  
-       if(this.pile.peek().rank == Rank.TEN){
-            this.pile = new Stack<>();
-       } 
-       System.out.println(this.pile);
-       return true;
+    public boolean playCard(int num) {
+        Hand curPlayer = this.players.get(this.turn.ordinal());
+        Card c = curPlayer.getCard(num);
+    
+        // Remove card from hand *before* checking validity
+        Card playedCard = curPlayer.playCard(c);
+    
+        if (playedCard == null) return false; // just in case
+    
+        System.out.println("Attempting to play: " + playedCard);
+    
+        // Push the card to the pile before checking if valid
+        this.pile.push(playedCard);
+    
+        if (!this.isValidMove(playedCard)) {
+            this.takeAll(); // player picks up the entire pile (including the card just played)
+            return false;
+        }
+    
+        // Special rule: clear pile on TEN
+        if (playedCard.rank == Rank.TEN) {
+            this.pile.clear();
+        }
+    
+        return true;
     }
+    
 
     // Returns true if the game is continuing, and false otherwise. Updates to the next turn
     public boolean nextTurn(){
@@ -95,7 +108,7 @@ public class Rules {
     // need to make a take hand function (implement takeall, and take one)
     public Card takeCard() { 
         System.out.println("Taking card");
-        System.out.println(pile);
+        System.out.println(this.pile);
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card temp = this.deck.takeCard();
         if(temp == null)
