@@ -11,7 +11,7 @@ public class PalaceGameGUI extends JFrame {
     
     
     // Game components
-    private Rules game;
+    private Controller controller;
     
     // UI components
     private JPanel mainPanel;
@@ -24,16 +24,13 @@ public class PalaceGameGUI extends JFrame {
     
     // Game state
     private int currentPlayerIndex = 0;
-
-    private Strategy RS = new RandomStrategy();
-    private Strategy BS = new BestStrategy();
     
     /**
      * Constructor - sets up the game and UI
      */
     public PalaceGameGUI() {
         // Create a new game
-        this.game = new Rules();
+        this.controller = new Controller(new Rules(), this);
         
         // Set up the frame
         this.setTitle("Palace Card Game");
@@ -105,11 +102,8 @@ public class PalaceGameGUI extends JFrame {
         
         // Take all button
         this.takeAllButton = new JButton("Take All Cards");
-        this.takeAllButton.addActionListener(e -> {
-            this.game.takeAll();
-            this.updateUI();
-            this.nextTurn();
-        });
+        this.takeAllButton.setActionCommand("takeAll");
+        this.takeAllButton.addActionListener(this.controller);
         buttonPanel.add(this.takeAllButton);
         
         
@@ -171,7 +165,7 @@ public class PalaceGameGUI extends JFrame {
     /**
      * Updates all UI elements to reflect current game state
      */
-    private void updateUI() {
+    public void updateUI() {
         for (int i = 0; i < 4; i++) {
             this.updatePlayerPanel(i);
         }
@@ -217,14 +211,14 @@ public class PalaceGameGUI extends JFrame {
      * Checks if the deck is empty
      */
     private boolean isDeckEmpty() {
-        return this.game.isDeckEmpty();
+        return this.controller.isDeckEmpty();
     }
     
     /**
      * Checks if the current player has any valid moves
      */
     private boolean hasValidMove() {
-        return this.game.hasValidMove();
+        return this.controller.hasValidMove();
     }
     
     /**
@@ -358,37 +352,23 @@ public class PalaceGameGUI extends JFrame {
             final int playIndex = this.getPlayIndex(playerIndex, title, i);
             
             // Only enable valid moves
-            boolean isValidMove = canPlayFromThisSection && this.game.isValidMove(card);
+            boolean isValidMove = canPlayFromThisSection && this.controller.isValidMove(card);
             
             JButton cardButton = this.createCardButton(card, isValidMove);
             
             if (isValidMove) {
-                cardButton.addActionListener(e -> {
-                    
-                    // Call the game logic
-                    boolean success = this.game.playCard(playIndex);
-                    
-                    if (success) {
-                        this.updateUI();
-                    
-                        // Automatically draw a card if deck isn't empty
-                        if (!this.isDeckEmpty() && this.game.getMainHand().size() < 5) {
-                            this.game.takeCard();
-                        }
-                    
-                        this.updateUI();
-                        this.nextTurn();
-                    }
-                     else {
-                        JOptionPane.showMessageDialog(null, "Invalid move!");
-                    }
-                });
+                cardButton.setActionCommand("CB" + playIndex);
+                cardButton.addActionListener(this.controller);
             }
             
             panel.add(cardButton);
         }
         
         return panel;
+    }
+
+    public void showCBMessage(){
+        JOptionPane.showMessageDialog(null, "Invalid move!");
     }
     
     /**
@@ -404,33 +384,25 @@ public class PalaceGameGUI extends JFrame {
                                      this.getFaceUpHand(playerIndex).isEmpty();
         
         // Add card buttons
-        for (int i = 0; i < cards.size(); i++) {
-            final int playIndex = this.getPlayIndex(playerIndex, "Face Down", i);
-            
+        for (int i = 0; i < cards.size(); i++) {            
             JButton cardButton = new JButton("?");
             cardButton.setPreferredSize(new Dimension(50, 75));
             cardButton.setBackground(Color.LIGHT_GRAY);
             cardButton.setEnabled(canPlayFromFaceDown);
             
             if (canPlayFromFaceDown) {
-                cardButton.addActionListener(e -> {                    
-                    // Always allow attempt to play face down card
-                    boolean success = this.game.playCard(playIndex);
-                    
-                    if (!success) {
-                        JOptionPane.showMessageDialog(null, "It was an invalid face down card. You must pick up the pile!");
-                        //this.game.takeAll();
-                    }
-            
-                    this.updateUI();
-                    this.nextTurn();
-                });
+                cardButton.setActionCommand("FD"+i);
+                cardButton.addActionListener(this.controller);
             }
             
             panel.add(cardButton);
         }
         
         return panel;
+    }
+
+    public void invalidFaceDown(){
+        JOptionPane.showMessageDialog(null, "It was an invalid face down card. You must pick up the pile!");
     }
     
     /**
@@ -496,7 +468,7 @@ public class PalaceGameGUI extends JFrame {
      * Updates the pile label to show the top card
      */
     private void updatePileLabel() {
-        Card topCard = this.game.viewTopCard();
+        Card topCard = this.controller.viewTopCard();
         if (topCard != null) {
             String displayRank = this.getDisplayRank(topCard.rank);
             String suitSymbol = this.getSuitSymbol(topCard.suit);
@@ -519,21 +491,21 @@ public class PalaceGameGUI extends JFrame {
      * Get the main hand for a player index using reflection
      */
     private ArrayList<Card> getMainHand(int playerIndex) {
-        return this.game.getMainHand(playerIndex);
+        return this.controller.getMainHand(playerIndex);
     }
     
     /**
      * Get the face up hand for a player index using reflection
      */
     private ArrayList<Card> getFaceUpHand(int playerIndex) {
-        return this.game.getFaceUpHand(playerIndex);
+        return this.controller.getFaceUpHand(playerIndex);
     }
     
     /**
      * Get the face down hand for a player index using reflection
      */
     private ArrayList<Card> getFaceDownHand(int playerIndex) {
-        return this.game.getFaceDownHand(playerIndex);
+        return this.controller.getFaceDownHand(playerIndex);
     }
     
     
@@ -541,18 +513,16 @@ public class PalaceGameGUI extends JFrame {
      * Gets the current player index from the game
      */
     private int getCurrentPlayerFromGame() {
-        return this.game.getTurn();
+        return this.controller.getTurn();
     }
     
     /**
      * Advances to the next player's turn
      */
-    private void nextTurn() {
+    public void nextTurn() {
         int winner = this.currentPlayerIndex;
-        boolean gameContinues = this.game.nextTurn();
+        boolean gameContinues = this.controller.nextTurn();
         if (!gameContinues) {
-            // Find winner
-            // int winner = (this.game.getTurn() + 3) % 4;
             
             JOptionPane.showMessageDialog(this, "Game Over! Player " + (winner + 1) + " wins!");
                 
@@ -580,38 +550,7 @@ public class PalaceGameGUI extends JFrame {
  * Makes a move for an AI player using the RandomStrategy
  */
     private void simulateAITurn() {
-        ArrayList<Card> mainHand = this.getMainHand(this.currentPlayerIndex);
-        ArrayList<Card> faceUpHand = this.getFaceUpHand(this.currentPlayerIndex);
-        ArrayList<Card> faceDownHand = this.getFaceDownHand(this.currentPlayerIndex);
-
-        boolean hasMainCards = !mainHand.isEmpty();
-        boolean hasFaceUpCards = !faceUpHand.isEmpty();
-
-        int cardIndex;
-        if(this.currentPlayerIndex == 2)
-            cardIndex = this.RS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
-        else 
-            cardIndex = this.BS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
-
-        boolean moveMade = false;
-
-        if (cardIndex == -1) {
-            this.game.takeAll();
-        } else {
-            moveMade = this.game.playCard(cardIndex);
-            if (!moveMade) {
-                // If invalid face-down card or unexpected issue, take all
-                this.game.takeAll();
-            }
-        }
-
-        // If card was played successfully and main hand is under 5, draw a card
-        if (moveMade && !this.isDeckEmpty() && this.getMainHand(this.currentPlayerIndex).size() < 5) {
-            this.game.takeCard();
-        }
-
-        this.updateUI();
-        this.nextTurn();
+        this.controller.simulateAITurn();
     }
 
     
@@ -628,6 +567,4 @@ public class PalaceGameGUI extends JFrame {
             new PalaceGameGUI().setVisible(true);
         });
     }
-
-    
 }
