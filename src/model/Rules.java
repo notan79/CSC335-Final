@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Rules {
-    public static void main(String args[]){
-        Rules game = new Rules();
-        System.out.println(game.toString()); 
-        System.out.println("DECK: " + game.deck);
-
-        System.out.println(Turn.values()[(game.turn.ordinal()+1) % 4]);
-
-    }
 
     private enum Turn {
         PLAYER1, PLAYER2, PLAYER3, PLAYER4;
@@ -58,30 +50,24 @@ public class Rules {
         Card c = curPlayer.getCard(num);
         
         if (c == null) {
-            System.out.println("Invalid card index: " + num);
             return false;
         }
         
-        System.out.println("Attempting to play: " + c.rank + " " + c.suit);
         
         // Determine if this is a face-down card
         boolean isFaceDown = curPlayer.getMainHand().isEmpty() && curPlayer.getFaceUpHand().isEmpty();
         
         if (isFaceDown) {
-            // debug check can delete later 
-            System.out.println("Playing face-down card: " + c.rank);
             
             // Remove the card from player's hand
             Card playedCard = curPlayer.playCard(c);
             if (playedCard == null) {
-                System.out.println("Error playing card");
                 return false;
             }
             
             // Check if it would be a valid move
             boolean validMove = this.isValidMove(playedCard);
             // debug check can delete later 
-            System.out.println("is face-down card valid? " + validMove);
             
             // Add the card to the pile regardless of if its valid or not
             this.pile.push(playedCard);
@@ -89,7 +75,6 @@ public class Rules {
             if (!validMove) {
                 // if its an invalid move the player must take all cards
                 // debug check can delete later 
-                System.out.println("Invalid face-down card played, taking pile");
                 this.takeAll();
                 return false;
             }
@@ -106,7 +91,6 @@ public class Rules {
         else {
             // Check if the move is valid before removing from hand
             if (!this.isValidMove(c)) {
-                System.out.println("Invalid move attempted");
                 return false; // Invalid move, don't even add to pile
             }
             
@@ -114,7 +98,6 @@ public class Rules {
             Card playedCard = curPlayer.playCard(c);
             
             if (playedCard == null) {
-                System.out.println("Error playing card");
                 return false;
             }
             
@@ -155,14 +138,11 @@ public class Rules {
 
     // need to make a take hand function (implement takeall, and take one)
     public Card takeCard() { 
-        System.out.println("Taking card");
-        System.out.println(this.pile);
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card temp = this.deck.takeCard();
         if(temp == null)
             return null;
         curPlayer.addCard(temp);
-        System.out.println(curPlayer);
         return temp;
     }
 

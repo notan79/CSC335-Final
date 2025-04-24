@@ -26,6 +26,7 @@ public class PalaceGameGUI extends JFrame {
     private int currentPlayerIndex = 0;
 
     private Strategy RS = new RandomStrategy();
+    private Strategy BS = new BestStrategy();
     
     /**
      * Constructor - sets up the game and UI
@@ -274,7 +275,7 @@ public class PalaceGameGUI extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder(title));
         
         for (Card card : cards) {
-            JLabel cardLabel = this.createCardLabel(card);
+            JLabel cardLabel = this.createCardLabel(card, title);
             panel.add(cardLabel);
         }
         
@@ -306,11 +307,13 @@ public class PalaceGameGUI extends JFrame {
     /**
      * Creates a label to display a card (for AI players)
      */
-    private JLabel createCardLabel(Card card) {
+    private JLabel createCardLabel(Card card, String title) {
         String displayRank = this.getDisplayRank(card.rank);
         String suitSymbol = this.getSuitSymbol(card.suit);
         String cardText = displayRank + suitSymbol;
         
+        if(title.equals("Main Hand"))
+            cardText = "?";
         JLabel cardLabel = new JLabel(cardText);
         cardLabel.setPreferredSize(new Dimension(40, 60));
         cardLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -320,6 +323,8 @@ public class PalaceGameGUI extends JFrame {
         cardLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         // Color red or black based on suit
+        if(title.equals("Main Hand"))
+            return cardLabel;
         String suitString = card.suit.toString();
         if (suitString.equals("♥") || suitString.equals("♦")) {
             cardLabel.setForeground(Color.RED);
@@ -359,8 +364,6 @@ public class PalaceGameGUI extends JFrame {
             
             if (isValidMove) {
                 cardButton.addActionListener(e -> {
-                    // For debug
-                    System.out.println("Playing card " + card + " at index " + playIndex);
                     
                     // Call the game logic
                     boolean success = this.game.playCard(playIndex);
@@ -370,10 +373,7 @@ public class PalaceGameGUI extends JFrame {
                     
                         // Automatically draw a card if deck isn't empty
                         if (!this.isDeckEmpty() && this.game.getMainHand().size() < 5) {
-                            Card drawnCard = this.game.takeCard();
-                            if (drawnCard != null) {
-                                System.out.println("Player drew: " + this.getDisplayRank(drawnCard.rank) + this.getSuitSymbol(drawnCard.suit));
-                            }
+                            this.game.takeCard();
                         }
                     
                         this.updateUI();
@@ -413,9 +413,7 @@ public class PalaceGameGUI extends JFrame {
             cardButton.setEnabled(canPlayFromFaceDown);
             
             if (canPlayFromFaceDown) {
-                cardButton.addActionListener(e -> {
-                    System.out.println("Playing face down card at index " + playIndex);
-                    
+                cardButton.addActionListener(e -> {                    
                     // Always allow attempt to play face down card
                     boolean success = this.game.playCard(playIndex);
                     
@@ -589,7 +587,11 @@ public class PalaceGameGUI extends JFrame {
         boolean hasMainCards = !mainHand.isEmpty();
         boolean hasFaceUpCards = !faceUpHand.isEmpty();
 
-        int cardIndex = this.RS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
+        int cardIndex;
+        if(this.currentPlayerIndex == 2)
+            cardIndex = this.RS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
+        else 
+            cardIndex = this.BS.whatCardToPlay(mainHand, faceUpHand, faceDownHand, this.game.viewTopCard(), hasMainCards, hasFaceUpCards);
 
         boolean moveMade = false;
 
@@ -605,11 +607,7 @@ public class PalaceGameGUI extends JFrame {
 
         // If card was played successfully and main hand is under 5, draw a card
         if (moveMade && !this.isDeckEmpty() && this.getMainHand(this.currentPlayerIndex).size() < 5) {
-            Card drawnCard = this.game.takeCard();
-            if (drawnCard != null) {
-                System.out.println("AI Player " + (this.currentPlayerIndex + 1) + " drew: " +
-                    this.getDisplayRank(drawnCard.rank) + this.getSuitSymbol(drawnCard.suit));
-            }
+            this.game.takeCard();
         }
 
         this.updateUI();
