@@ -4,15 +4,61 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Hand implements Iterable<Card>{
+    /*
+    Class Iterable
+    Author: James Montoya, Cameron Liu, Natalie Grubb, Nathan Crutchfield
+    Purpose: This class represents a player in the palace card game. 
+    Inherits, Interfaces, Constants:
+        Interfaces: Iterable<T>
+        Constants:
+            Private:
+                final ArrayList<Card> mainHand
+                final ArrayList<Card> faceUpHand
+                final ArrayList<Card> faceDownHand
+    Instance Variables: None
+    Constructors: None
+    Class Methods:
+        Public: 
+            Iterator<Card> iterator()
+    Instance Methods:
+        Public:
+            void addCard(Card c)
+            boolean addCardBeginning(Card c)
+            Card playCard(Card c)
+            Card getCard(int num)
+            void swapCards(Card c1, Card c2)
+            int totalCards()
+            ArrayList<Card> getFaceUpHand()
+            ArrayList<Card> getMainHand()
+            ArrayList<Card> getFaceDownHand()
+            String toString()
+     */
     private final ArrayList<Card> mainHand = new ArrayList<>(5);
     private final ArrayList<Card> faceUpHand = new ArrayList<>(3);
     private final ArrayList<Card> faceDownHand = new ArrayList<>(3);
 
     public void addCard(Card c){
+        /*
+        Method addCard
+        Purpose: adds a card to the player's main hand.
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: Card c
+        Returns: None
+         */
         this.mainHand.add(c);
     }
 
     public boolean addCardBeginning(Card c){
+        /*
+        Method addCardBeginning
+        Purpose: This method adds cards to a hand at the start of a game, making sure each hand stays the right size.
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: Card c
+        Returns: a boolean value
+         */
+
         // Add to face down first
         if(this.faceDownHand.size() < 3){
             this.faceDownHand.add(c);
@@ -28,10 +74,20 @@ public class Hand implements Iterable<Card>{
             this.mainHand.add(c);
             return true;
         }
+        //each hand is full
         return false;
     }
 
-    public Card playCard(Card c) {        
+    public Card playCard(Card c) { 
+        /*
+        Method playCard
+        Purpose: This method plays a card from a hand. 
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: Card c
+        Returns: The Card object that will be played. 
+         */       
+
         // Remove from the mainHand first
         if(this.mainHand.contains(c)) {
             this.mainHand.remove(c);
@@ -51,6 +107,14 @@ public class Hand implements Iterable<Card>{
     }
 
     public Card getCard(int num){
+        /*
+        Method getCard
+        Purpose: Gets a card from a hand at the index provided. 
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: int num
+        Returns: a Card object
+        */
         // Check if the index is in the main hand range
         if(num < this.mainHand.size()){
             return this.mainHand.get(num);
@@ -71,6 +135,14 @@ public class Hand implements Iterable<Card>{
 
     // C1 is from mainHand and c2 is from faceUp hand
     public void swapCards(Card c1, Card c2){
+        /*
+        Method swapCards
+        Purpose: Swaps a card in the main hand with a card in the face up hand.
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: Card c1, Card c2
+        Returns: None
+         */
         this.mainHand.remove(c1);
         this.faceUpHand.remove(c2);
 
@@ -79,6 +151,14 @@ public class Hand implements Iterable<Card>{
     }
 
     public int totalCards(){
+        /*
+        Method totalCards
+        Purpose: Gets the total amount of cards in all hands. 
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters: None
+        Returns: an integer
+         */
         return this.mainHand.size() + this.faceUpHand.size() + this.faceDownHand.size();
     }
 
