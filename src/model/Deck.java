@@ -22,7 +22,7 @@ public class Deck {
      */
     
     private Stack<Card> deck = new Stack<Card>();
-
+    
     public Deck(){
         ArrayList<Card> cards = Card.getShuffledCards();
         for(Card c: cards){
