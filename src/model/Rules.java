@@ -194,7 +194,7 @@ public class Rules {
         int cardCount = curPlayer.totalCards();
 
         // Main hand
-        if(cardCount > 6)
+        if(cardCount > 6 || curPlayer.getMainHand().size() > 0)
             curHand = curPlayer.getMainHand();
 
         // Face up hand
