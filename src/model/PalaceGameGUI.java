@@ -174,10 +174,6 @@ public class PalaceGameGUI extends JFrame {
             this.updatePlayerPanel(i);
         }
         
-        // Update the pile and deck
-        this.updatePileLabel();
-        this.updateDeckLabel();
-        
         // See if it is player one's turn
         boolean isPlayerTurn = this.controller.getTurn() == 0;
         
@@ -203,7 +199,7 @@ public class PalaceGameGUI extends JFrame {
     /*
         Update the deck label based on the current state of controller's deck
      */
-    private void updateDeckLabel() {
+    public void updateDeckLabel() {
         boolean isDeckEmpty = this.isDeckEmpty();
         if (!isDeckEmpty) {
             this.deckLabel.setText("Deck: Cards Available");
@@ -506,7 +502,7 @@ public class PalaceGameGUI extends JFrame {
     /*
         Update the pile to show the top Card
      */
-    private void updatePileLabel() {
+    public void updatePileLabel() {
 
         // Get the top Card
         Card topCard = this.controller.viewTopCard();

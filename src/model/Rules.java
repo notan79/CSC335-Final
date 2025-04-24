@@ -13,6 +13,7 @@ public class Rules {
     private Stack<Card> pile;
     private ArrayList<Hand> players; // stores all the players 
     private Turn turn = Turn.PLAYER1;
+    private ArrayList<Observer> observers = new ArrayList<>();
 
     public Rules() { 
         this.deck = new Deck();
@@ -24,12 +25,27 @@ public class Rules {
             Hand player = new Hand(); 
             for (int j = 0; j < 11; j++) { // this gives the person their 11 cards 
                 player.addCardBeginning(this.deck.takeCard());
+                this.notifyObservers();
             }
             this.players.add(player);
         }
         this.pile.push(this.deck.takeCard());
+        this.notifyObservers();
     }
 
+    public void addObserver(Observer o){
+        this.observers.add(o);
+    }
+
+    public void removeObserver(Observer o){
+        this.observers.remove(o);
+    }
+
+    private void notifyObservers(){
+        for(Observer o : this.observers){
+            o.updateUI();
+        }
+    }
 
     public Card viewTopCard() { 
         if (this.pile.isEmpty()) {
@@ -82,6 +98,7 @@ public class Rules {
                 this.pile.clear();
             }
             
+            this.notifyObservers();
             return true;
         } 
 
@@ -106,7 +123,7 @@ public class Rules {
             if (playedCard.rank == Rank.TEN) {
                 this.pile.clear();
             }
-            
+            this.notifyObservers();
             return true;
         }
     }
@@ -149,6 +166,7 @@ public class Rules {
         while(!this.pile.empty()){
             curPlayer.addCard(this.pile.pop());
         }
+        this.notifyObservers();
     }
 
     public boolean isValidMove(Card c){

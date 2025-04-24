@@ -19,6 +19,11 @@ public class Controller implements ActionListener{
 	public Controller(Rules model, PalaceGameGUI view) {
 		this.model = model;
         this.view = view;
+
+        PileObserver po = new PileObserver(view);
+        PlayerObserver plo = new PlayerObserver(view);
+        model.addObserver(po);
+        model.addObserver(plo);
 	}
 
 	@Override
@@ -39,7 +44,6 @@ public class Controller implements ActionListener{
     private void takeAllCards(){
         // Run the take all commands
         this.model.takeAll();
-        this.view.updateUI();
         this.view.nextTurn();
     }
 
@@ -48,15 +52,11 @@ public class Controller implements ActionListener{
         int playIndex = Integer.parseInt(""+ command.charAt(2));
         boolean success = this.model.playCard(playIndex);
                     
-        if (success) {
-            this.view.updateUI();
-        
+        if (success) {        
             // Automatically draw a card if deck isn't empty
             if (!this.model.isDeckEmpty() && this.model.getMainHand().size() < 5) {
                 this.model.takeCard();
             }
-        
-            this.view.updateUI();
             this.view.nextTurn();
         }else{
             this.view.showCBMessage();
@@ -73,7 +73,6 @@ public class Controller implements ActionListener{
             this.view.invalidFaceDown();
         }
 
-        this.view.updateUI();
         this.view.nextTurn();
     }
 
@@ -112,8 +111,6 @@ public class Controller implements ActionListener{
             this.model.takeCard();
         }
 
-        // Update the UI
-        this.view.updateUI();
         this.view.nextTurn();
     }
 
