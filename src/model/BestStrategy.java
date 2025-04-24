@@ -5,12 +5,45 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class BestStrategy implements Strategy {
-    //implement whatCardToPlay, whatCardsToSwap, and whatCardsToSwap
+    /*
+    Class BestStrategy
+    Author: James Montoya, Natalie Grubb, Cameron Liu, Nathan Crutchfield
+    Purpose: This class implements the strategy of choosing the lowest card in the hand.
+    Inherits, Interfaces, Constants: 
+        Interfaces: Strategy
+    Instance variables:
+        Private:
+            Random random
+    Constructors: None
+    Class Methods:
+        Public:
+            int whatCardToPlay(ArrayList<Card> mainHand, ArrayList<Card> faceUpHand, ArrayList<Card> faceDownHand, Card topOfPile, boolean hasMainCards, boolean hasFaceUpCards)
+            Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand)
+            int whatFaceDownCard(ArrayList<Card> faceDownHand)
+        Private:
+            boolean isValidMove(Card c, Card topOfPile)
+    Instance Methods: None
+     */
+
     private Random random = new Random();
 
     @Override
     public int whatCardToPlay(ArrayList<Card> mainHand, ArrayList<Card> faceUpHand, ArrayList<Card> faceDownHand, Card topOfPile, boolean hasMainCards, boolean hasFaceUpCards) {
-        //create a list of valid cards.
+        /*
+        Method whatCardToPlay
+        Purpose: Returns the index of the card to play, if theres no valid move it returns -1
+        Pre-condition: None
+        Post-Condition: None
+        Parameters: 
+            ArrayList<Card> mainHand
+            ArrayList<Card> faceUpHand
+            ArrayList<Card> faceDownHand
+            Card topOfPile
+            boolean hasMainCards
+            boolean hasFaceUpCards
+        Returns: an integer 
+        */
+        
         ArrayList<Integer> validCards = new ArrayList<>();
 
         //Determine which hand to use based on game rules and which is available.
@@ -28,14 +61,13 @@ public class BestStrategy implements Strategy {
             return mainHand.size() + faceUpHand.size() + this.random.nextInt(faceDownHand.size());
         }
 
-        //Find the lowest card in your hand. 
+        //Find the lowest card in your main hand. 
         int lowestRank = 13; //the highest possible rank is 13. Consider the card if it is lower.
         for(Card c: currentHand){
             if(c.rank.ordinal() <= lowestRank && this.isValidMove(c, topOfPile)){
                 lowestRank = c.rank.ordinal();
             }
         }
-
         int index = 0;
         for(Card c: currentHand){
             if(c.rank.ordinal() == lowestRank){
@@ -54,6 +86,16 @@ public class BestStrategy implements Strategy {
     } 
     
     private boolean isValidMove(Card c, Card topOfPile) {
+        /*
+        Method isValidMove
+        Purpose: Checks if the player is allowed to place the card onto the deck.
+        Pre-condition: None
+        Post-condition: None
+        Parameters:
+            Card c
+            Card topOfPile
+        Returns: a boolean value
+        */
         if (c.rank == Rank.TEN || c.rank == Rank.TWO || topOfPile == null)
             return true;
 
@@ -65,7 +107,17 @@ public class BestStrategy implements Strategy {
 
     @Override
     public Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand) {
-        //swaps the lowest card in your hand with the highest card in the face up deck.
+        /*
+        Method whatCardsToSwap
+        Purpose: This method chooses the lowest card in your hand and the highest card in the face up deck to be swapped.
+        Pre-Condition: None
+        Post-Condition: None
+        Parameters:
+            HashSet<Card> mainHand
+            HashSet<Card> faceUpHand
+        Returns: An array containing the two cards that will be swapped with each other. Index 1 is from the face up hand, and index 0 is from the main hand. Returns null if does not want to swap.
+        */
+
         Card[] cardsToSwap = new Card[2];
 
         // Converts the sets to lists
@@ -89,7 +141,7 @@ public class BestStrategy implements Strategy {
             }
         }
         /*If the highest card of the face up deck is the same rank as
-        the lowest card in your hand thenn there is no point in swapping.*/
+        the lowest card in your hand then there is no point in swapping.*/
         if(cardsToSwap[0].rank.ordinal() == cardsToSwap[1].rank.ordinal()){
             return null;
         }else{
@@ -99,6 +151,15 @@ public class BestStrategy implements Strategy {
 
     @Override
     public int whatFaceDownCard(ArrayList<Card> faceDownHand) {
+        /*
+        Method whatFaceDownCard
+        Purpose: Randomly determines which face down card to play when no other options are available
+        Pre-condition: None
+        Post-Condition: None
+        Parameters: ArrayList<Card> faceDownHand
+        Returns: an integer representing the index of the face down card to play
+        */
+        
         // Pick a random face down card
         if (!faceDownHand.isEmpty()) {
             return this.random.nextInt(faceDownHand.size());
