@@ -245,17 +245,12 @@ class HandTest {
         	hand2Cards.add(temp);
         }
        
-        
         StringBuilder sb = new StringBuilder();
         sb.append("Main Hand: " + hand2.getMainHandToString() + "\n");
         sb.append("Face up Hand: " + hand2.getFaceUpHandToString().toString() + "\n");
-        sb.append("Face down Hand: " + hand2.getFaceDownToString().toString());
-       
- 
-        System.out.println(sb.toString());
-        System.out.println("\nproper:\n" + hand2.toString());
+        sb.append("Face down Hand: " + hand2.getFaceDownToString().toString() + "\n");
+
         assertEquals(sb.toString(), hand2.toString());
-        
        
     }
     
