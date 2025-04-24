@@ -9,7 +9,7 @@ public class Rules {
         PLAYER1, PLAYER2, PLAYER3, PLAYER4;
     }
 
-    private Deck deck; // the deck that each player (Hand.java) takes from in order to recieve a Card
+    private Deck deck; // the deck that each player (Hand.java) takes from in order to receive a Card
     private Stack<Card> pile;
     private ArrayList<Hand> players; // stores all the players 
     private Turn turn = Turn.PLAYER1;
@@ -39,11 +39,11 @@ public class Rules {
     }
 
     // Precon: c1 and c2 are in the player's hand
-    public void swapCards(Card c1, Card c2) { 
-        // swaps the card from the current hand (5) to the face up hand (3)
-        Hand player = this.players.get(this.turn.ordinal()); // this gets the current player
-        player.swapCards(c1, c2);
-    }
+//    public void swapCards(Card c1, Card c2) { 
+//        // swaps the card from the current hand (5) to the face up hand (3)
+//        Hand player = this.players.get(this.turn.ordinal()); // this gets the current player
+//        player.swapCards(c1, c2);
+//    }
 
     public boolean playCard(int num) {
         Hand curPlayer = this.players.get(this.turn.ordinal());
@@ -52,8 +52,6 @@ public class Rules {
         if (c == null) {
             return false;
         }
-        
-        
         // Determine if this is a face-down card
         boolean isFaceDown = curPlayer.getMainHand().isEmpty() && curPlayer.getFaceUpHand().isEmpty();
         
@@ -222,6 +220,16 @@ public class Rules {
 
     public int getTurn(){
         return this.turn.ordinal();
+    }
+    
+    // will always work if you use index 0-3
+    public Hand getPlayer(int player) {
+    	return this.players.get(player);
+    }
+    
+    public void clearHand() {
+    	this.players.get(turn.ordinal()).clear(); // this gets the player (Hand.java) and clears the hand
+    	
     }
 
     public String toString() {
