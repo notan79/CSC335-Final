@@ -1,28 +1,70 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Iterator;
+import model.Card;
 
 class HandTest {
 
-    @Test
-    public void testAddCard() { 
-        // Create a new hand
-        Hand hand = new Hand();
-        ArrayList<Card> cards = Card.getShuffledCards();
-        
-        // Add cards to the new hand
-        for (int i = 0; i < 11; i++) {
-            assertTrue(hand.addCard(cards.get(i)));
-        }
-        
-        // Trying to add a 12th card shouldn't work since the hand is full
-        assertFalse(hand.addCard(cards.get(11)));
-    }
+//    @Test
+//    public void testAddCard() { 
+//        // Create a new hand
+//        Hand hand = new Hand();
+//        ArrayList<Card> cards = Card.getShuffledCards();
+//        
+//        // Add cards to the new hand
+//        for (int i = 0; i < 11; i++) {
+//            assertTrue(hand.addCard(cards.get(i)));
+//        }
+//        
+//        // Trying to add a 12th card shouldn't work since the hand is full
+//        assertFalse(hand.addCard(cards.get(11)));
+//    }
+	
+	@Test 
+	public void testAddCardBeginning() {
+		Hand hand1 = new Hand();
+		Deck deck = new Deck(); 
+		
+		for (int i = 0; i < 11; i++) { // adds 11 cards to the deck, 3 face down, 3 face up, and 5 in the main hand. 
+			hand1.addCardBeginning(deck.takeCard());
+		}
+		
+		Card extra = deck.takeCard();
+		
+		assertTrue(hand1.totalCards() == 11);
+		assertFalse(hand1.addCardBeginning(extra));
+	
+	}
+	
+	@Test
+	public void testPlayCard() { 
+		Hand hand = new Hand();
+		Deck deck = new Deck(); 
+		ArrayList<Card> cardsInHand = new ArrayList<Card>();
+		
+		for (int i = 0; i < 11; i++) { // adds 11 cards to the deck, 3 face down, 3 face up, and 5 in the main hand. 
+			Card temp = deck.takeCard();
+			hand.addCardBeginning(temp);
+			cardsInHand.add(temp);
+		} 
+
+		for (int i = 10; i > 5; i--) { // adds 11 cards to the deck, 3 face down, 3 face up, and 5 in the main hand. 
+			hand.playCard(cardsInHand.remove(i));
+		}	
+		assertEquals(hand.playCard(hand.getFaceUpHand().get(2)).rank, cardsInHand.remove(5).rank);
+		
+		for (int i = 4; i > 0; i--) { // adds 11 cards to the deck, 3 face down, 3 face up, and 5 in the main hand. 
+			hand.playCard(cardsInHand.remove(i));
+		}	
+		assertEquals(hand.playCard(hand.getFaceDownHand().get(0)).rank, cardsInHand.remove(0).rank);
+		
+		assertNull(hand.playCard(deck.takeCard()));
+
+	}
     
     @Test
     public void testPlayCardMainHand() {
@@ -32,7 +74,7 @@ class HandTest {
         
         // Add cards to fill the sections: 3 face down, 3 face up, 5 main hand
         for (int i = 0; i < 11; i++) {
-            hand.addCard(cards.get(i));
+            hand.addCardBeginning(cards.get(i));
         }
         
         // Gets a card from main hand
@@ -55,7 +97,7 @@ class HandTest {
         
         // Add cards to fill the face down section and face up section: 3 face down, 3 face up, 0 main hand
         for (int i = 0; i < 6; i++) {
-            hand.addCard(cards.get(i));
+            hand.addCardBeginning(cards.get(i));
         }
         
         // Gets a card from face up hand
@@ -78,8 +120,9 @@ class HandTest {
         
         // Add cards to fill face down section: 3 face down, 0 face up, 0 main hand
         for (int i = 0; i < 3; i++) {
-            hand.addCard(cards.get(i));
+            hand.addCardBeginning(cards.get(i));
         }
+        
         
         // Gets a card from face down hand
         Card faceDownCard = hand.getFaceDownHand().get(0);
@@ -99,14 +142,33 @@ class HandTest {
     public void testGetCard() {
         Hand hand = new Hand();
         ArrayList<Card> cards = Card.getShuffledCards();
-        
+
+        // Add 3 cards to faceDownHand
         for (int i = 0; i < 3; i++) {
-            hand.addCard(cards.get(i));
+            assertTrue(hand.addCardBeginning(cards.get(i)));
+        }
+
+        for (int i = 3; i < 6; i++) {
+            assertTrue(hand.addCardBeginning(cards.get(i)));
+        }
+
+        for (int i = 6; i < 9; i++) {
+            assertTrue(hand.addCardBeginning(cards.get(i)));
         }
         
-        // Gets the first card
-        Card firstCard = hand.getCard(0);
-        assertNotNull(firstCard);
+        assertEquals(cards.get(6), hand.getCard(0));
+        assertEquals(cards.get(7), hand.getCard(1));
+        assertEquals(cards.get(8), hand.getCard(2));
+
+        assertEquals(cards.get(3), hand.getCard(3));
+        assertEquals(cards.get(4), hand.getCard(4));
+        assertEquals(cards.get(5), hand.getCard(5));
+
+        assertEquals(cards.get(0), hand.getCard(6));
+        assertEquals(cards.get(1), hand.getCard(7));
+        assertEquals(cards.get(2), hand.getCard(8));
+
+        assertNull(hand.getCard(9));
     }
     
     @Test
@@ -116,7 +178,7 @@ class HandTest {
         
         // 3 face down cards, 3 face up cards, 5 in main hand cards
         for (int i = 0; i < 11; i++) {
-            hand.addCard(cards.get(i));
+            hand.addCardBeginning(cards.get(i));
         }
         
         // Gets a card from main hand and face up hand
@@ -151,12 +213,12 @@ class HandTest {
         
         // 3 face down cards, 3 face up cards, 5 in main hand cards
         for (int i = 0; i < 11; i++) {
-            hand.addCard(cards.get(i));
+            hand.addCardBeginning(cards.get(i));
         }
         
         // Verify the hand sizes
-        HashSet<Card> mainHand = hand.getMainHand();
-        HashSet<Card> faceUpHand = hand.getFaceUpHand();
+        ArrayList<Card> mainHand = hand.getMainHand();
+        ArrayList<Card> faceUpHand = hand.getFaceUpHand();
         ArrayList<Card> faceDownHand = hand.getFaceDownHand();
         
         assertEquals(5, mainHand.size());
@@ -167,12 +229,34 @@ class HandTest {
     @Test
     public void testToString() {
         Hand hand = new Hand();
+        Hand hand2 = new Hand();
+        Deck deck = new Deck(); 
         ArrayList<Card> cards = Card.getShuffledCards();
+        ArrayList<Card> hand2Cards = new ArrayList<Card>();
         hand.addCard(cards.get(0));
         
         String handString = hand.toString();
         assertNotNull(handString);
         assertFalse(handString.isEmpty());
+        
+        for (int i = 0; i < 11; i++) {
+        	Card temp = deck.takeCard();
+        	hand2.addCardBeginning(temp);
+        	hand2Cards.add(temp);
+        }
+       
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Main Hand: " + hand2.getMainHandToString() + "\n");
+        sb.append("Face up Hand: " + hand2.getFaceUpHandToString().toString() + "\n");
+        sb.append("Face down Hand: " + hand2.getFaceDownToString().toString());
+       
+ 
+        System.out.println(sb.toString());
+        System.out.println("\nproper:\n" + hand2.toString());
+        assertEquals(sb.toString(), hand2.toString());
+        
+       
     }
     
     @Test
@@ -196,4 +280,10 @@ class HandTest {
         
         assertEquals(5, count);
     }
+    
+    
+  
+   
+    
+    
 }

@@ -95,6 +95,31 @@ public class Hand implements Iterable<Card>{
     public ArrayList<Card> getFaceDownHand() {
         return new ArrayList<>(this.faceDownHand);
 }
+    
+    public StringBuilder getMainHandToString() { 
+    		StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.mainHand.size(); i++) {
+            sb.append(mainHand.get(i));
+        }
+        return sb;
+    }
+    
+    public StringBuilder getFaceUpHandToString() { 
+    	StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.faceUpHand.size(); i++) {
+            sb.append(faceUpHand.get(i));
+        }
+        return sb;
+    }
+
+    public StringBuilder getFaceDownToString() { 
+    	StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.faceDownHand.size(); i++) {
+            sb.append(faceDownHand.get(i));
+        }
+        return sb;
+    }
+
 
 
     public String toString(){
