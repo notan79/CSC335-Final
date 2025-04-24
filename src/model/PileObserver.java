@@ -1,5 +1,8 @@
 package model;
 
+/*
+    Observer that updates the pile information
+ */
 public class PileObserver implements Observer{
     PalaceGameGUI view;
 
