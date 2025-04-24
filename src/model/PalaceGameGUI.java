@@ -1,8 +1,8 @@
 package model;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * A GUI for the Palace Card Game with proper player control and draw pile mechanics
