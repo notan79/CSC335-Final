@@ -421,7 +421,7 @@ public class PalaceGameGUI extends JFrame {
                     
                     if (!success) {
                         JOptionPane.showMessageDialog(null, "It was an invalid face down card. You must pick up the pile!");
-                        this.game.takeAll();
+                        //this.game.takeAll();
                     }
             
                     this.updateUI();
