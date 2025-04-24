@@ -53,45 +53,82 @@ public class Rules {
         player.swapCards(c1, c2);
     }
 
-
     public boolean playCard(int num) {
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card c = curPlayer.getCard(num);
         
         if (c == null) {
             System.out.println("Invalid card index: " + num);
-            return false; // just in case
-        }
-        
-        System.out.println("Attempting to play: " + c);
-        
-        // Check if the move is valid before removing it from the hand
-        if (!this.isValidMove(c)) {
-            // Card is not valid, don't remove it
-            this.pile.push(c); // Still push to pile for consistency
-            this.takeAll(); // player picks up the entire pile (including the card just played)
             return false;
         }
         
-        // Remove the card from the player's hand
-        Card playedCard = curPlayer.playCard(c);
+        System.out.println("Attempting to play: " + c.rank + " " + c.suit);
         
-        if (playedCard == null) {
-            System.out.println("Error playing card");
-            return false; // just in case
+        // Determine if this is a face-down card
+        boolean isFaceDown = curPlayer.getMainHand().isEmpty() && curPlayer.getFaceUpHand().isEmpty();
+        
+        if (isFaceDown) {
+            // debug check can delete later 
+            System.out.println("Playing face-down card: " + c.rank);
+            
+            // Remove the card from player's hand
+            Card playedCard = curPlayer.playCard(c);
+            if (playedCard == null) {
+                System.out.println("Error playing card");
+                return false;
+            }
+            
+            // Check if it would be a valid move
+            boolean validMove = this.isValidMove(playedCard);
+            // debug check can delete later 
+            System.out.println("is face-down card valid? " + validMove);
+            
+            // Add the card to the pile regardless of if its valid or not
+            this.pile.push(playedCard);
+            
+            if (!validMove) {
+                // if its an invalid move the player must take all cards
+                // debug check can delete later 
+                System.out.println("Invalid face-down card played, taking pile");
+                this.takeAll();
+                return false;
+            }
+            
+            // Special rule: clear pile on TEN
+            if (playedCard.rank == Rank.TEN) {
+                this.pile.clear();
+            }
+            
+            return true;
+        } 
+
+        // For face-up and main hand cards
+        else {
+            // Check if the move is valid before removing from hand
+            if (!this.isValidMove(c)) {
+                System.out.println("Invalid move attempted");
+                return false; // Invalid move, don't even add to pile
+            }
+            
+            // Move is valid, now remove the card from the player's hand
+            Card playedCard = curPlayer.playCard(c);
+            
+            if (playedCard == null) {
+                System.out.println("Error playing card");
+                return false;
+            }
+            
+            // Push the card to the pile
+            this.pile.push(playedCard);
+            
+            // Special rule: clear pile on TEN
+            if (playedCard.rank == Rank.TEN) {
+                this.pile.clear();
+            }
+            
+            return true;
         }
-        
-        // Push the card to the pile
-        this.pile.push(playedCard);
-        
-        // Special rule: clear pile on TEN
-        if (playedCard.rank == Rank.TEN) {
-            this.pile.clear();
-        }
-        
-        return true;
     }
-    
 
     // Returns true if the game is continuing, and false otherwise. Updates to the next turn
     public boolean nextTurn(){
