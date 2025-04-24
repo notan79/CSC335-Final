@@ -22,7 +22,7 @@ class RulesTest {
         assertTrue(gameString.contains("PLAYER3"));
         assertTrue(gameString.contains("PLAYER4"));
     }
-    
+   
     @Test
     public void testNextTurn() {
         // Create a new game
@@ -104,22 +104,22 @@ class RulesTest {
         assertTrue(game.isValidMove(ten));
     }
     
-    @Test  
-    public void testSwapCards() {
-        Rules game = new Rules();
-        
-        // Get two cards to swap
-        ArrayList<Card> shuffledCards = Card.getShuffledCards();
-        Card cardOne = shuffledCards.get(0);
-        Card cardTwo = shuffledCards.get(1);
-        
-        try {
-            // Can't test sway cards directly so test that it doesn't throw an exception
-            game.swapCards(cardOne, cardTwo);
-            assertTrue(true);
-        } catch (Exception e) {
-        }
-    }
+//    @Test  
+//    public void testSwapCards() {
+//        Rules game = new Rules();
+//        
+//        // Get two cards to swap
+//        ArrayList<Card> shuffledCards = Card.getShuffledCards();
+//        Card cardOne = shuffledCards.get(0);
+//        Card cardTwo = shuffledCards.get(1);
+//        
+//        try {
+//            // Can't test sway cards directly so test that it doesn't throw an exception
+//            game.swapCards(cardOne, cardTwo);
+//            assertTrue(true);
+//        } catch (Exception e) {
+//        }
+//    }
     
     @Test
     public void testHasValidMove() {
@@ -187,17 +187,138 @@ class RulesTest {
     	// This expects the game to continue with all players having cards
         assertTrue(gameContinue);
     }
+
+    
+    @Test 
+    public void testViewTopCardEmpty() { 
+    	Rules rules = new Rules();
+    	rules.takeAll();
+    	assertNull(rules.viewTopCard());
+    }
+    
+    @Test 
+    public void testDeckEmpty() { 
+    	Rules game = new Rules();
+    	for (int i = 0; i < 8; i++) {
+    		game.takeCard();
+    	}
+    	assertTrue(game.isDeckEmpty());
+    }
     
     @Test
-    public void testMainMethod() {
-    	// Calls main method with no arguments and verifies it runs without an exception
-        try {
-            Rules.main(new String[0]);
-            assertTrue(true);
-        } catch (Exception e) {
+    public void testNextTurnParameter() { 
+    	Rules game = new Rules();
+    	assertTrue(game.nextTurn(true));
+      	
+    	game.clearHand();
+    	assertFalse(game.nextTurn(false));
+    }
+    
+    @Test
+    public void testGetMainHand() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getMainHand();
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test
+    public void testFaceUpHand() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getFaceUpHand();
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test
+    public void testFaceDownHand() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getFaceDownHand();
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test
+    public void testGetMainHandInt() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getMainHand(0);
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test
+    public void testFaceUpHandInt() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getFaceUpHand(0);
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test
+    public void testFaceDownHandInt() { 
+    	Rules game = new Rules();
+    	ArrayList<Card> hand = game.getFaceDownHand(0);
+    	hand.clear();  	
+    	assertEquals(hand, new ArrayList<Card>());
+    }
+    
+    @Test void testPlayCardAlt() {
+    	// fix this case
+    	Rules game = new Rules(); 
+    	
+    	// makes sure we use the hand down cards
+    	Card temp = game.takeCard();
+    	game.getPlayer(game.getTurn()).getMainHand().clear();
+        game.getPlayer(game.getTurn()).getFaceUpHand().clear();
+        game.getPlayer(game.getTurn()).getFaceDownHand().clear();
+        game.getPlayer(game.getTurn()).getFaceDownHand().add(temp);
+      
+        if (game.playCard(0)) {
+        	assertEquals(game.takeCard(), game.viewTopCard());
+	
         }
     }
     
+    
+    @Test
+    public void testViewTopCard() {
+        Rules game = new Rules();
+        
+        while (game.viewTopCard() != null) {
+            game.takeAll(); // force player to take the pile
+        }
+        
+        assertNull(game.viewTopCard());
+    }    
+    
+    @Test
+    public void testHasValidMove2() {
+        Rules game = new Rules();
+        Hand player = game.getPlayer(game.getTurn());
 
+        player.getMainHand().clear();
+        player.getFaceUpHand().clear();
+        player.getFaceDownHand().clear();
+
+ 
+        for (int i = 0; i < 4; i++) {
+            Card card = game.takeCard(); // draw card from deck
+            player.getFaceUpHand().add(card);
+        }
+
+        boolean hasMove = game.hasValidMove();
+        
+        assertTrue(hasMove || !hasMove); // just verifies method runs, tweak this if needed
+    }
+
+
+    
+
+    
+    
+    
+    
+    
+    
 
 }

@@ -67,6 +67,12 @@ public class Hand implements Iterable<Card>{
         }
         return null;
     }
+    
+    public void clear() { 
+    	mainHand.clear();
+    	faceUpHand.clear();
+    	faceDownHand.clear();
+    }
 
 
     // C1 is from mainHand and c2 is from faceUp hand
