@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Move 9 elements to &apos;model&apos;&#x0A;- Original project: &apos;FinalProject&apos;&#x0A;- Destination element: &apos;model&apos;&#x0A;- Original elements:&#x0A;     SomeModel.java&#x0A;     Card.java&#x0A;     Rules.java&#x0A;     CardTest.java&#x0A;     Suit.java&#x0A;     Deck.java&#x0A;     Rank.java&#x0A;     Drawable.java&#x0A;     Hand.java&#x0A;- Update references to refactored element" description="Move files" element1="SomeModel.java" element2="Card.java" element3="Rules.java" element4="CardTest.java" element5="Suit.java" element6="Deck.java" element7="Rank.java" element8="Drawable.java" element9="Hand.java" files="9" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1744670196039" target="model" units="0" version="1.0"/>
-</session>
