@@ -1,12 +1,15 @@
+package view;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import view.PalaceGameGUI;
 
 public class Main {
 	
 	public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+        resetGame();
+    }
+	
+	public static void resetGame() {
+		SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception e) {
@@ -14,5 +17,5 @@ public class Main {
             }
             new PalaceGameGUI().setVisible(true);
         });
-    }
+	}
 }

@@ -33,7 +33,11 @@ public class PalaceGameGUI extends JFrame {
         Sets up the initial components and controller
      */
     public PalaceGameGUI() {
-        // Creates the controller / model
+        this.initialize();
+    }
+    
+    private void initialize() {
+    	// Creates the controller / model
         this.controller = new Controller(new Rules(), this);
         
         // Sets up the window
@@ -566,7 +570,7 @@ public class PalaceGameGUI extends JFrame {
         if (!gameContinues) {
             
             JOptionPane.showMessageDialog(this, "Game Over! Player " + (winner + 1) + " wins!");
-            this.takeAllButton.setEnabled(false);    
+            this.takeAllButton.setEnabled(false);  
             return;
         }
         
