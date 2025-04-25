@@ -39,7 +39,7 @@ public class PalaceGameGUI extends JFrame {
         // Sets up the window
         this.setTitle("Palace Card Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 800);
+        this.setSize(1500, 1000);
         this.setLocationRelativeTo(null);
         
         // Creates the main panel
@@ -337,6 +337,7 @@ public class PalaceGameGUI extends JFrame {
         // Set the label for the card and set its visual settings
         JLabel cardLabel = new JLabel(cardText);
         cardLabel.setPreferredSize(new Dimension(40, 60));
+
         cardLabel.setHorizontalAlignment(JLabel.CENTER);
         cardLabel.setVerticalAlignment(JLabel.CENTER);
         cardLabel.setBackground(Color.WHITE);
@@ -468,7 +469,7 @@ public class PalaceGameGUI extends JFrame {
         
         // Create the button
         JButton cardButton = new JButton(cardText);
-        cardButton.setPreferredSize(new Dimension(50, 75));
+        cardButton.setPreferredSize(new Dimension(55, 75));
         
         // Color red or black based on suit
         String suitString = card.suit.toString();
