@@ -104,38 +104,6 @@ public class RandomStrategy implements Strategy {
         return c.rank.ordinal() >= topOfPile.rank.ordinal();
     }
 
-    @Override
-    public Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand) {
-        /*
-        Method whatCardsToSwap
-        Purpose: This method randomly chooses which cards to swap from the face down deck and the main hand deck. 
-        Pre-Condition: None
-        Post-Condition: None
-        Parameters:
-            HashSet<Card> mainHand
-            HashSet<Card> faceUpHand
-        Returns: An array containing the two cards that will be swapped with each other. Index 1 is from the face up hand, and index 0 is from the main hand. Returns null if does not want to swap.
-        */
-
-        // Randomly decide whether to swap
-        // If the random booleon is yes, and the main/hand and FaceUpHands aren't empty, then swap
-        if (this.random.nextBoolean() && !mainHand.isEmpty() && !faceUpHand.isEmpty()) {
-            Card[] cardsToSwap = new Card[2];
-        
-        // Converts the sets to lists
-        ArrayList<Card> mainHandList = new ArrayList<>(mainHand);
-        ArrayList<Card> faceUpHandList = new ArrayList<>(faceUpHand);
-        
-        // Gets random cards from each hand
-        cardsToSwap[0] = mainHandList.get(this.random.nextInt(mainHandList.size()));
-        cardsToSwap[1] = faceUpHandList.get(this.random.nextInt(faceUpHandList.size()));
-        
-        return cardsToSwap;
-    }
-    
-    // return null if the random boolean comes up no and theres no swap (or the lists are empty)
-    return null;
-}
 
     @Override
     public int whatFaceDownCard(ArrayList<Card> faceDownHand) {

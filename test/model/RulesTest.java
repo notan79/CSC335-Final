@@ -2,7 +2,10 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Stack;
 
 class RulesTest { 
 
@@ -124,13 +127,39 @@ class RulesTest {
     @Test
     public void testHasValidMove() {
         // Test that hasValidMove() returns a boolean without an exceptions
+    	
+    	// Needs reflection for reproducability
+    	Class<?> rulesClass = Rules.class;
+    	
+
+    	Field pile;
+    	try {
+    		pile = rulesClass.getDeclaredField("pile");
+    	} catch(NoSuchFieldException e){
+			e.printStackTrace();
+    		return;
+    	}
+    	pile.setAccessible(true);
+    	
         Rules game = new Rules();
+        Stack<Card> s = new Stack<>();
+        ArrayList<Card> tempArr = Card.getShuffledCards();
+    	for(Card a : tempArr) {
+    		if(a.rank == Rank.TWO) {
+    			s.push(a);
+    		}
+    	}
+    	try {
+        	pile.set(game, s);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return;
+		}
         
-        try {
-            boolean hasMove = game.hasValidMove();
-            assertTrue(hasMove);
-        } catch (Exception e) {
-        }
+        
+        boolean hasMove = game.hasValidMove();
+        assertTrue(hasMove);
+        
     }
     
     @Test
@@ -262,9 +291,32 @@ class RulesTest {
     	assertEquals(hand, new ArrayList<Card>());
     }
     
-    @Test void testPlayCardAlt() {
-    	// fix this case
+    @Test 
+    void testPlayCardAlt() {
+    	// Reflection to guarantee reproducibility
+    	Class<?> rulesClass = Rules.class;
+
+    	Field pile;
+    	try {
+    		pile = rulesClass.getDeclaredField("pile");
+    		
+    	} catch(NoSuchFieldException e){
+			e.printStackTrace();
+    		return;
+    	}
+    	
+    	pile.setAccessible(true);
+    	
     	Rules game = new Rules(); 
+    	
+    	ArrayList<Card> tempArr = Card.getShuffledCards();
+    	Card c = null;
+    	for(Card a : tempArr) {
+    		if(a.rank == Rank.TWO) {
+    			c = a;
+    			break;
+    		}
+    	}
     	
     	// makes sure we use the hand down cards
     	Card temp = game.takeCard();
@@ -272,12 +324,55 @@ class RulesTest {
         game.getPlayer(game.getTurn()).getFaceUpHand().clear();
         game.getPlayer(game.getTurn()).getFaceDownHand().clear();
         game.getPlayer(game.getTurn()).getFaceDownHand().add(temp);
-      
-        if (game.playCard(0)) {
-        	assertEquals(game.takeCard(), game.viewTopCard());
-	
+        
+        
+        // All valid moves
+        for(int i = 0; i < 12; ++i) {
+        	// Reset the stack to the lowest card so any card can play
+        	Stack<Card> s = new Stack<>();
+        	s.push(c);
+        	try {
+            	pile.set(game, s);
+    		} catch (IllegalAccessException e) {
+    			e.printStackTrace();
+    			return;
+    		}
+        	assertTrue(game.hasValidMove());
+        	assertTrue(game.playCard(0));
         }
+        assertFalse(game.nextTurn());
+      
+        ArrayList<Card> mh = new ArrayList<Card>();
+        Stack<Card> s = new Stack<>();
+        for(Card a : tempArr) {
+    		if(a.rank == Rank.SEVEN) {
+    			c = a;
+    		}else if(a.rank == Rank.EIGHT) {
+    			mh.add(a);
+    		}
+    	}
+    	
+        game = new Rules();
+        s.push(c);
+    	try {
+        	pile.set(game, s);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return;
+		}
+    	
+    	
+    	// Go until an illegal card is gathered
+    	c = game.takeCard();
+    	while(c .rank == Rank.TEN || c.rank.ordinal() <= Rank.SEVEN.ordinal() ) {
+    		c = game.takeCard();
+    	}
+    	
+    	// Find position of illegal card
+    	int size = game.getMainHand().size();
+        assertFalse(game.playCard(size-1));
     }
+    
     
     
     @Test
