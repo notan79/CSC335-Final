@@ -105,49 +105,6 @@ public class BestStrategy implements Strategy {
         return c.rank.ordinal() >= topOfPile.rank.ordinal();
     }
 
-    @Override
-    public Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand) {
-        /*
-        Method whatCardsToSwap
-        Purpose: This method chooses the lowest card in your hand and the highest card in the face up deck to be swapped.
-        Pre-Condition: None
-        Post-Condition: None
-        Parameters:
-            HashSet<Card> mainHand
-            HashSet<Card> faceUpHand
-        Returns: An array containing the two cards that will be swapped with each other. Index 1 is from the face up hand, and index 0 is from the main hand. Returns null if does not want to swap.
-        */
-
-        Card[] cardsToSwap = new Card[2];
-
-        // Converts the sets to lists
-        ArrayList<Card> mainHandList = new ArrayList<>(mainHand);
-        ArrayList<Card> faceUpHandList = new ArrayList<>(faceUpHand);
-
-        //Find the lowest card in your hand. 
-        int lowestMainRank = 13;
-        for(Card c: mainHandList){
-            if(c.rank.ordinal() <= lowestMainRank){
-                lowestMainRank = c.rank.ordinal();
-                cardsToSwap[0] = c;
-            }
-        }
-        //Find the highest card in the face up deck.
-        int highestFaceUpRank = 0;
-        for(Card c: faceUpHandList){
-            if(c.rank.ordinal() >= highestFaceUpRank){
-                highestFaceUpRank = c.rank.ordinal();
-                cardsToSwap[1] = c;
-            }
-        }
-        /*If the highest card of the face up deck is the same rank as
-        the lowest card in your hand then there is no point in swapping.*/
-        if(cardsToSwap[0].rank.ordinal() == cardsToSwap[1].rank.ordinal()){
-            return null;
-        }else{
-            return cardsToSwap;
-        }
-    }
 
     @Override
     public int whatFaceDownCard(ArrayList<Card> faceDownHand) {

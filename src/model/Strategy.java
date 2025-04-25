@@ -33,18 +33,6 @@ public interface Strategy {
     Returns: an integer
      */
     int whatCardToPlay(ArrayList<Card> mainHand, ArrayList<Card> faceUpHand, ArrayList<Card> faceDownHand, Card topOfPile, boolean hasMainCards, boolean hasFaceUpCards);
-    
-    /*
-    Method whatCardsToSwap
-    Purpose: This method chooses which cards to swap from the face down deck and the main hand deck. 
-    Pre-Condition: None
-    Post-Condition: None
-    Parameters:
-        HashSet<Card> mainHand
-        HashSet<Card> faceUpHand
-    Returns: An array containing the two cards that will be swapped with each other. Index 1 is from the face up hand, and index 0 is from the main hand. Returns null if does not want to swap.
-     */
-    Card[] whatCardsToSwap(HashSet<Card> mainHand, HashSet<Card> faceUpHand);
 
     /*
     Method whatFaceDownCard
