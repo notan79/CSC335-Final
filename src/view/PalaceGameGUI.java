@@ -2,11 +2,17 @@
     The Java swing GUI class, implemented with help from AI (Claude, ChatGPT)
 */
 
-package model;
+package view;
 
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
+
+import controller.Controller;
+import model.Card;
+import model.Rank;
+import model.Rules;
+import model.Suit;
 
 public class PalaceGameGUI extends JFrame {
     
@@ -585,20 +591,5 @@ public class PalaceGameGUI extends JFrame {
     */
     private void simulateAITurn() {
         this.controller.simulateAITurn();
-    }
-
-    
-    /*
-        Main method to run the application
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            new PalaceGameGUI().setVisible(true);
-        });
     }
 }

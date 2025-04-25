@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 /*
     Simple interface to allow for the model to directly update the UI after

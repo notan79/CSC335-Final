@@ -2,10 +2,13 @@
     Controller to handle the communication between GUI and model
  */
 
-package model;
+package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import model.*;
+import view.PalaceGameGUI;
 
 public class Controller implements ActionListener{
 

@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import controller.Observer;
+
 public class Rules {
 
     private enum Turn {
@@ -246,7 +248,7 @@ public class Rules {
     }
     
     public void clearHand() {
-    	this.players.get(turn.ordinal()).clear(); // this gets the player (Hand.java) and clears the hand
+    	this.players.get(this.turn.ordinal()).clear(); // this gets the player (Hand.java) and clears the hand
     	
     }
 
