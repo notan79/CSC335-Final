@@ -1,4 +1,6 @@
-package model;
+package controller;
+
+import view.PalaceGameGUI;
 
 /*
     Observer that updates the label information (main UI components)
