@@ -1,4 +1,4 @@
-# CSC335-Final (Spring 2025)
+# CSC335-Final (Spring 2025) 
 ## Palace Card Game
 Nathan Crutchfield  
 Cameron Liu  
