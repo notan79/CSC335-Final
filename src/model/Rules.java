@@ -5,6 +5,36 @@ import java.util.Stack;
 
 import controller.Observer;
 
+
+/* Authors: Cameron Liu, Nathan Crutchfield, Natalie Grubb, James Montoya
+ * 
+ * Purpose: Represents the overview of the game state, essentially acting as the "rules" of the class. 
+ * It is basically the skeleton of the basic game, storing players, and creating one main deck for all players 
+ * to draw their cards from, and manages which player can move, etc. 
+ * 
+ * Instance Variables: 
+ *      deck: Stack of cards to represent an actual deck 
+ *      pile: Stack of cards to represent the placed cards pile
+ *      players: ArrayList<Hand> of players (Hand.java) in order to store all the players being created
+ *      turn: Turn enum that represents which player's turn it is 
+ *      observers: ArrayList<Observer> that stores all observers necessary for class to interact with UI
+ * 
+ * Methods: 
+ *      public void addObserver(Observer): adds observer to the ArrayList of observers
+ *      public void removeObserver(Observer): removes observe from the ArrayList of observers
+ *      public void notifyObservers(): updates the UI in correspondence to the observer 
+ *      public Card viewTopCard(): is just the method peek() in order card game implementations where it returns the top card from the deck. 
+ *      public boolean playCard(num): plays the current card that is relative to the int in the parameters 
+ *      public boolean nextTurn(): determines if there is a next turn, if so, it updates the current player to the next one 
+ *      public boolean nextTurn(boolean): determines if there is a next turn whilst also using given boolean in paramters. if so, it updates the current player to the next one. 
+ *      public Card takeCard(): method that takes one card and gives it to the current player  
+ *      public Card takeAll(): method that takes all cards and gives it to the current player 
+ *      public boolean isValidMove(Card): methods that returns a boolean if the card in the params is a valid move for the current player
+ *      public boolean hasValidMove(): method that returns a boolean if the current player has a valid move (basically can play a card)
+ *      public boolean isDeckEmpty(): returns if the deck has 0 cards or not
+ *   
+ */
+
 public class Rules {
 
     private enum Turn {
@@ -25,7 +55,7 @@ public class Rules {
         for (int i = 0; i < 4; i++) { 
             // creates 4 players with full hands
             Hand player = new Hand(); 
-            for (int j = 0; j < 11; j++) { // this gives the person their 11 cards 
+            for (int j = 0; j < 11; j++) { // this gives the person their 11 cards in their main hand, top hand, and face down hand. 
                 player.addCardBeginning(this.deck.takeCard());
                 this.notifyObservers();
             }
@@ -45,11 +75,13 @@ public class Rules {
 
     private void notifyObservers(){
         for(Observer o : this.observers){
+            // updates UI in correspondence to the observers
             o.updateUI();
         }
     }
 
     public Card viewTopCard() { 
+        // this returns and gets the top card of the pile. essentially is just peek
         if (this.pile.isEmpty()) {
             return null;
         }
@@ -155,6 +187,7 @@ public class Rules {
 
     // need to make a take hand function (implement takeall, and take one)
     public Card takeCard() { 
+        // method that takes one card and gives it to the current player (whoever turn it is)
         Hand curPlayer = this.players.get(this.turn.ordinal());
         Card temp = this.deck.takeCard();
         if(temp == null)
@@ -164,13 +197,16 @@ public class Rules {
     }
 
     public void takeAll(){
+        // current player takes the whole pile 
         Hand curPlayer = this.players.get(this.turn.ordinal());
         while(!this.pile.empty()){
-            curPlayer.addCard(this.pile.pop());
+            curPlayer.addCard(this.pile.pop()); 
         }
         this.notifyObservers();
     }
 
+
+    // game state method that just determines if the current move is a valid one or not
     public boolean isValidMove(Card c){
         // Can always play a ten or a two, or if pile is empty
         if(c.rank == Rank.TEN || c.rank == Rank.TWO || this.pile.empty())
@@ -186,6 +222,7 @@ public class Rules {
         return c.rank.ordinal() >= topOfPile.rank.ordinal();
     }
 
+    // another game state method to determine if the player has a valid move or not 
     public boolean hasValidMove(){
         Hand curPlayer = this.players.get(this.turn.ordinal());
         ArrayList<Card> curHand;
@@ -210,6 +247,7 @@ public class Rules {
         return false;
     }
 
+    // checks if the current deck is empty 
     public boolean isDeckEmpty(){
         return this.deck.isEmpty();
     }
